@@ -1,4 +1,4 @@
-package library.gpLibrary.models.classification;
+package library.gpLibrary.specialisations.classification;
 
 import library.gpLibrary.helpers.Printer;
 import library.gpLibrary.models.highOrder.interfaces.IMemberStatistics;

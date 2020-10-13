@@ -1,6 +1,6 @@
 package library.gpLibrary.models.primitives.functions.interfaces;
 
-import library.gpLibrary.models.classification.Problem;
+import library.gpLibrary.specialisations.classification.Problem;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.ChoiceNode;
 
 import java.util.List;
@@ -35,7 +35,7 @@ public abstract class IFeedDownFunction<T> extends ChoiceNode<T> {
 
 
     @Override
-    public boolean IsFull(){
+    public boolean isFull(){
         return _children.size() == _maxChildren;
     }
 }

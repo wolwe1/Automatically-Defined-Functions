@@ -46,7 +46,7 @@ public abstract class Node<T>
 
     public Node<T> addChild(Node<T> newNode) throws Exception {
 
-        if (IsFull()) throw new Exception("Node cannot have any more children");
+        if (isFull()) throw new Exception("Node cannot have any more children");
 
         newNode.Parent = this;
         newNode._level = _level + 1;
@@ -65,7 +65,7 @@ public abstract class Node<T>
         return _children.get(index);
     }
 
-    public abstract boolean IsFull();
+    public abstract boolean isFull();
 
     protected abstract Node<T> getCopy();
 
@@ -144,4 +144,14 @@ public abstract class Node<T>
     public abstract boolean hasAncestor(Node<T> nodeToAdd);
 
     public abstract boolean isValid();
+
+    public int getSize() {
+
+        int numberOfNodes = 1;
+
+        for (Node<T> child : _children) {
+            numberOfNodes += child.getSize();
+        }
+        return numberOfNodes;
+    }
 }

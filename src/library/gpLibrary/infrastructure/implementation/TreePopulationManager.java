@@ -27,7 +27,7 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
     private final List<PopulationStatistics<Double>> compositionHistory;
 
 
-    public TreePopulationManager(ITreeGenerator<Double> treeGenerator, IFitnessFunction<Double> fitnessFunction, long seed){
+    public TreePopulationManager(ITreeGenerator<T> treeGenerator, IFitnessFunction<T> fitnessFunction, long seed){
         _generator = treeGenerator;
         _fitnessFunction = fitnessFunction;
         _randomNumberGenerator = new Random(seed);

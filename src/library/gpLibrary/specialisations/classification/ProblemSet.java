@@ -1,11 +1,11 @@
-package library.gpLibrary.models.classification;
+package library.gpLibrary.specialisations.classification;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ProblemSet<T> {
 
-    List<Problem<T>> problems;
+    private final List<Problem<T>> problems;
 
     public ProblemSet(List<String> data,List<String> dataNames,String answerField){
 

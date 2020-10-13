@@ -1,12 +1,11 @@
-package library.gpLibrary.models.classification;
+package library.gpLibrary.specialisations.classification;
 
 import java.util.HashMap;
 
 public class Problem<T> {
 
-    private T _answer;
     private final HashMap<String,T> items;
-    private String answerField;
+    private final String answerField;
 
     public Problem(String answerField) {
         items = new HashMap<>();

@@ -1,4 +1,4 @@
-package library.gpLibrary.models.classification;
+package library.gpLibrary.specialisations.classification;
 
 import library.gpLibrary.functionality.interfaces.ITreeVisitor;
 import library.gpLibrary.models.highOrder.implementation.NodeTree;
@@ -36,7 +36,6 @@ public class ClassificationTree<T> extends NodeTree<T> {
         if (IsFull())
             throw new Exception("Tree full");
 
-        //node._maxChildren = maxBreadth;
         //Empty tree
         if (root == null)
         {
@@ -78,7 +77,7 @@ public class ClassificationTree<T> extends NodeTree<T> {
         {
             temp = queue.remove();
 
-            if (!temp.IsFull())
+            if (!temp.isFull())
             {
                 temp.addChild(node);
                 return;
@@ -94,7 +93,7 @@ public class ClassificationTree<T> extends NodeTree<T> {
     }
 
     public NodeTree<T> getCopy(){
-        NodeTree<T> newTree = new ClassificationTree<>(maxDepth, maxBreadth);
+        NodeTree<T> newTree = new ClassificationTree<T>(maxDepth, maxBreadth);
         try {
             newTree.addNode(root.getCopy(true));
         } catch (Exception e) {
@@ -107,15 +106,8 @@ public class ClassificationTree<T> extends NodeTree<T> {
     @Override
     public void replaceNode(int nodeToReplace, Node<T> newNode) {
 
-//        if(nodeToReplace == 0){
-//
-//            root = (ChoiceNode<T>) newNode;
-//            root._level = 0;
-//        }else{
-            Node<T> nodeInTree = getNode(nodeToReplace);
-            nodeInTree.Parent.setChild(nodeInTree.index,newNode);
-        //}
-
+        Node<T> nodeInTree = getNode(nodeToReplace);
+        nodeInTree.Parent.setChild(nodeInTree.index,newNode);
     }
 
     @Override
@@ -160,7 +152,7 @@ public class ClassificationTree<T> extends NodeTree<T> {
         {
             temp = queue.remove();
 
-            if (!temp.IsFull())
+            if (!temp.isFull())
             {
                 return temp;
             }

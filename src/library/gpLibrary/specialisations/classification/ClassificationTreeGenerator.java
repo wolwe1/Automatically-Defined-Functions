@@ -1,4 +1,4 @@
-package library.gpLibrary.models.classification;
+package library.gpLibrary.specialisations.classification;
 
 import library.gpLibrary.infrastructure.interfaces.ITreeGenerator;
 import library.gpLibrary.models.highOrder.implementation.FunctionalSet;

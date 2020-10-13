@@ -16,7 +16,7 @@ public abstract class IOperateUpFunction<T> extends ValueNode<T> {
     abstract void Operation();
 
     @Override
-    public boolean IsFull() {
+    public boolean isFull() {
         return _children.size() == _maxChildren;
     }
 }

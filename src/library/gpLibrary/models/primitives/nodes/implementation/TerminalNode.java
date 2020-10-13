@@ -17,7 +17,7 @@ public abstract class TerminalNode<T> extends Node<T> implements IValueNode<T> {
     }
 
     @Override
-    public boolean IsFull() {
+    public boolean isFull() {
         return true;
     }
 }
