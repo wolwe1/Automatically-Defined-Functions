@@ -1,24 +1,59 @@
 package library.gpLibrary.specialisations.ADF.infrastructure;
 
+import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
-import library.gpLibrary.models.primitives.nodes.abstractClasses.ValueNode;
 
-public class ADFRoot<T> extends ValueNode<T> {
+public class ADFRoot<T> extends NodeTree<T> {
 
     private final ADFFuncDefinition<T> definition;
     private final ADFMain<T> main;
 
-    public ADFRoot() {
-        super("progn");
+    public ADFRoot(int maxDepth, int maxBreadth, int maxMainDepth, int maxMainBreadth) {
+        super();
 
-        definition = new ADFFuncDefinition<>();
-        main = new ADFMain<>();
+        definition = new ADFFuncDefinition<>(maxDepth,maxBreadth);
+        main = new ADFMain<>(maxMainDepth,maxMainBreadth);
+        //Need to handle breadth and width calculations manually
+        _maxNodes = definition.getMaxNodes() + main.getMaxNodes();
     }
 
     public ADFRoot(ADFRoot<T> other) {
-        super(other.name);
+        super(other.maxDepth,other.maxBreadth);
+
         definition = (ADFFuncDefinition<T>) other.definition.getCopy();
         main = (ADFMain<T>) other.main.getCopy();
+    }
+
+
+    @Override
+    public int getSize() {
+        return definition.getSize() + main.getSize();
+    }
+
+    @Override
+    public void addNode(Node<T> node) throws Exception {
+
+        if(definition.isFull())
+            main.addNode(node);
+        else
+            definition.addNode(node);
+    }
+
+    @Override
+    protected void setRoot(Node<T> node) {
+        throw new RuntimeException("Set root not defined on ADF root");
+    }
+
+
+    @Override
+    public void clearLeaves() {
+        definition.clearLeaves();
+        main.clearLeaves();
+    }
+
+    @Override
+    public NodeTree<T> getCopy() {
+        return new ADFRoot<>(this);
     }
 
     @Override
@@ -27,23 +62,8 @@ public class ADFRoot<T> extends ValueNode<T> {
     }
 
     @Override
-    protected Node<T> getCopy() {
-        return new ADFRoot<>(this);
-    }
-
-    @Override
-    public boolean canTakeMoreChildren() {
-        throw new RuntimeException("Not implemented");
-    }
-
-    @Override
-    public boolean requiresTerminals(int maxDepth) {
-        throw new RuntimeException("Not implemented");
-    }
-
-    @Override
-    public boolean hasAncestor(Node<T> nodeToAdd) {
-        return false;
+    public boolean requiresTerminals() {
+        return definition.requiresTerminals() || main. requiresTerminals();
     }
 
     @Override
@@ -52,16 +72,16 @@ public class ADFRoot<T> extends ValueNode<T> {
     }
 
     @Override
-    public T getValue() {
-        return main.getValue();
+    public Node<T> getRoot() {
+        throw new RuntimeException("Get root not defined on ADF root");
     }
 
     @Override
-    public T getBaseValue() {
-        throw new RuntimeException("Not implemented");
+    public boolean acceptsNode(Node<T> nodeToAdd) {
+        if(definition.isFull())
+            return main.acceptsNode(nodeToAdd);
+        else
+            return definition.acceptsNode(nodeToAdd);
     }
 
-    public int getSize() {
-        return definition.getSize() + main.getSize();
-    }
 }

@@ -1,5 +1,9 @@
 package library.gpLibrary.helpers;
 
+import library.gpLibrary.models.primitives.IFitnessFunction;
+import library.gpLibrary.models.primitives.enums.PrintLevel;
+import library.gpLibrary.specialisations.classification.ClassifierFitnessFunction;
+import library.gpLibrary.specialisations.classification.ProblemSet;
 import library.helpers.FileManager;
 
 import java.io.BufferedReader;
@@ -33,23 +37,59 @@ public class SetupManager {
 
     }
 
-    public void setupParametersgetGPParameters(){
-        int populationSize = 1;
-        int numberOfGenerations = 1;
-        int numberOfRuns = 1;
+    public void setupGPParameters(){
 
-        populationSize = (int) getNumericInput("Population size:");
-        numberOfGenerations = (int) getNumericInput("Number of generations:");
-        numberOfRuns = (int) getNumericInput("Number of runs:");
+        int populationSize = (int) getNumericInput("Population size:");
+        int numberOfGenerations = (int) getNumericInput("Number of generations:");
+        int numberOfRuns = (int) getNumericInput("Number of runs:");
+        Printer.printLine();
+        int crossoverRate = (int) getNumericInput("Crossover rate: {0-1}");
+        int mutationRate = (int) getNumericInput("Mutation rate: {0-1}");
+        int reproductionRate = (int) getNumericInput("Reproduction rate: {0-1}");
+        Printer.printLine();
+
+        StringBuilder options = new StringBuilder();
+        for (PrintLevel value : PrintLevel.values()) {
+            options.append(value).append(",");
+        }
+        options = new StringBuilder(options.substring(0, options.length() - 1));
+        String displayType = getStringInput("Display option: {" + options + "}" );
 
         info.setPopulationSize(populationSize);
         info.setNumberOfGenerations(numberOfGenerations);
         info.setNumberOfRuns(numberOfRuns);
 
+        info.setCrossoverRate(crossoverRate);
+        info.setMutationRate(mutationRate);
+        info.setReproductionRate(reproductionRate);
+        info.setDisplayType(PrintLevel.valueOf(displayType));
+
+
+    }
+
+    private String getStringInput(String message) {
+        try {
+            System.out.println(message);
+
+            return reader.readLine();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Unable to read input");
+        }
     }
 
     public RunInfo getInfo() {
         return info;
+    }
+
+    public IFitnessFunction<String> createClassifierFitnessFunction(String answerField,String fieldNames){
+        String[] fields = fieldNames.split(",");
+
+        ProblemSet<String> trainingSet = new ProblemSet<>(this.info.getTrainData(), Arrays.asList(fields),answerField);
+        ProblemSet<String> testSet = new ProblemSet<>(this.info.getTestData(), Arrays.asList(fields),answerField);
+
+        return new ClassifierFitnessFunction<>(trainingSet,testSet);
     }
 
     private double getNumericInput(String message){
@@ -84,4 +124,5 @@ public class SetupManager {
 
         return Arrays.asList(training,testing);
     }
+
 }

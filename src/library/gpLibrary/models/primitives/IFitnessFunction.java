@@ -35,4 +35,14 @@ public interface IFitnessFunction<T> {
      * @return The fittest individual
      */
     PopulationMember<T> getFittest(List<PopulationMember<T>> members);
+
+    /**
+     * Specifies the members to be run against the training set
+     */
+    void useTrainingSet();
+
+    /**
+     * Specifies the members to run against the testing set
+     */
+    void useTestingSet();
 }

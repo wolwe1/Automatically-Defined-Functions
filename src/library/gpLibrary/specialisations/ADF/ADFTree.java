@@ -1,6 +1,5 @@
 package library.gpLibrary.specialisations.ADF;
 
-import library.gpLibrary.functionality.interfaces.ITreeVisitor;
 import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
 import library.gpLibrary.specialisations.ADF.infrastructure.ADFRoot;
@@ -9,10 +8,12 @@ public class ADFTree<T> extends NodeTree<T> {
 
     private ADFRoot<T> root;
 
-    public ADFTree(int maxDepth, int maxBreadth) {
-        super(maxDepth, maxBreadth);
+    public ADFTree(int maxFuncDepth, int maxFuncBreadth,int maxMainDepth, int maxMainBreadth) {
+        super();
 
-        root = new ADFRoot<>();
+        root = new ADFRoot<>(maxFuncDepth,maxFuncBreadth,maxMainDepth,maxMainBreadth);
+        //Must handle breadth and depth calculations manually
+        _maxNodes = root.getMaxNodes();
     }
 
     public ADFTree(NodeTree<T> other) {
@@ -20,52 +21,43 @@ public class ADFTree<T> extends NodeTree<T> {
     }
 
     @Override
-    public int getTreeSize() {
-        return root.getSize();
+    public void addNode(Node<T> newNode) throws Exception {
+        if (isFull())
+            throw new Exception("Tree full");
+
+        root.addNode(newNode);
+        numberOfNodes++;
     }
 
     @Override
-    public void addNode(Node<T> node) throws Exception {
-        root.addNode(node);
-    }
-
-    @Override
-    public void visitTree(ITreeVisitor<T> visitor) {
-
-    }
-
-    @Override
-    protected void breadthFirstInsert(Node<T> node) throws Exception {
-
-    }
-
-    @Override
-    public void clearLeaves() {
-
+    protected void setRoot(Node<T> node) {
+        throw new RuntimeException("No reason to use set root on ADF Tree");
     }
 
     @Override
     public NodeTree<T> getCopy() {
-        return null;
+        return new ADFTree<>(this);
     }
 
     @Override
-    public void replaceNode(int nodeToReplace, Node<T> newNode) {
-
-    }
-
-    @Override
-    public boolean IsFull() {
-        return false;
+    public boolean isFull() {
+        return root.isFull();
     }
 
     @Override
     public boolean requiresTerminals() {
-        return false;
+        return root.requiresTerminals();
     }
 
     @Override
-    public boolean isValid() {
-        return false;
+    public Node<T> getRoot() {
+        throw new RuntimeException("Get root not defined for ADF trees");
     }
+
+    @Override
+    public boolean acceptsNode(Node<T> nodeToAdd) {
+        throw new RuntimeException("Not implemented");
+    }
+
+
 }

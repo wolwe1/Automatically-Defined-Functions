@@ -1,68 +1,56 @@
 package library.gpLibrary.specialisations.ADF.infrastructure;
 
+import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.ValueNode;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ADFFuncDefinition<T> extends ValueNode<T>{
+public class ADFFuncDefinition<T> extends NodeTree<T> {
 
     List<T> arguments;
     ADFunction<T> function;
 
-    protected ADFFuncDefinition() {
-        super("Defun");
+    protected ADFFuncDefinition(int maxDepth,int maxBreadth) {
+        super(maxDepth,maxBreadth);
+
         arguments = new ArrayList<>();
     }
 
     public ADFFuncDefinition(ADFFuncDefinition<T> other) {
-        super(other.name);
+        super(other.maxDepth,other.maxBreadth);
         arguments = other.arguments;
         function = (ADFunction<T>) other.function.getCopy();
     }
 
     @Override
-    public boolean isFull() {
-        return function.isFull();
+    protected void setRoot(Node<T> node) {
+        function.root = (ValueNode<T>) node;
     }
 
     @Override
-    protected Node<T> getCopy() {
+    public ADFFuncDefinition<T> getCopy() {
         return new ADFFuncDefinition<>(this);
     }
 
     @Override
-    public boolean canTakeMoreChildren() {
-        return function.canTakeMoreChildren();
+    public boolean isFull() {
+        return function.root.isFull();
     }
 
     @Override
-    public boolean requiresTerminals(int maxDepth) {
+    public boolean requiresTerminals() {
         return function.requiresTerminals(maxDepth);
     }
 
     @Override
-    public boolean hasAncestor(Node<T> nodeToAdd) {
-        return false;
+    public ValueNode<T> getRoot() {
+        return function.root;
     }
 
     @Override
-    public boolean isValid() {
-        return function.isValid();
-    }
-
-    @Override
-    public T getValue() {
-        return function.getValue();
-    }
-
-    @Override
-    public T getBaseValue() {
-        return function.getBaseValue();
-    }
-
-    public int getSize() {
-        return function.getSize();
+    public boolean acceptsNode(Node<T> nodeToAdd) {
+        return true;
     }
 }

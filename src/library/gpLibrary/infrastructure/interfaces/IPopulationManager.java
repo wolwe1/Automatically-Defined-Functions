@@ -55,4 +55,6 @@ public interface IPopulationManager<T> {
     void printPopulationComposition();
 
     void printFullHistory();
+
+    void setSeed(long seed);
 }

@@ -10,4 +10,6 @@ public interface IGeneticAlgorithm<T> {
     PopulationMember<T> run();
 
     void addOperator(IGeneticOperator<T> newOperator);
+
+    void setSeed(long seed);
 }

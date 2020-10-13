@@ -15,8 +15,8 @@ import java.util.*;
 
 public class TreePopulationManager<T> implements IPopulationManager<T> {
 
-    protected Random _randomNumberGenerator;
-    protected ITreeGenerator<T> _generator;
+    protected Random randomNumberGenerator;
+    protected ITreeGenerator<T> generator;
     protected IFitnessFunction<T> _fitnessFunction;
     protected List<PopulationMember<T>> _currentPopulation;
     protected List<PopulationMember<T>> _nextPopulation;
@@ -28,11 +28,11 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
 
 
     public TreePopulationManager(ITreeGenerator<T> treeGenerator, IFitnessFunction<T> fitnessFunction, long seed){
-        _generator = treeGenerator;
+        generator = treeGenerator;
         _fitnessFunction = fitnessFunction;
-        _randomNumberGenerator = new Random(seed);
+        randomNumberGenerator = new Random(seed);
 
-        _generator.setRandomFunction(_randomNumberGenerator);
+        generator.setRandomFunction(randomNumberGenerator);
 
         _currentPopulation = new ArrayList<>();
         _nextPopulation = new ArrayList<>();
@@ -45,7 +45,7 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
     public void createPopulation(int populationSize) {
 
         for (int i = 0; i < populationSize; i++) {
-            NodeTree<T> newTree = _generator.createRandom();
+            NodeTree<T> newTree = generator.createRandom();
             PopulationMember<T> newMember = new PopulationMember<>(newTree);
 
             _nextPopulation.add(newMember);
@@ -108,6 +108,12 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
         Printer.underline();
     }
 
+    @Override
+    public void setSeed(long seed) {
+        this.generator.setSeed(seed);
+        this.randomNumberGenerator.setSeed(seed);
+    }
+
     private HashMap<String, Double> getTreeComposition() {
         HashMap<String,Integer> chromosomeFrequency = new HashMap<>();
         HashMap<String,Double> percentageComposition = new HashMap<>();
@@ -135,7 +141,7 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
 
         double averageTreeSize = 0;
         for (PopulationMember<T> populationMember : _currentPopulation) {
-            averageTreeSize += populationMember.getTree().getTreeSize();
+            averageTreeSize += populationMember.getTree().getSize();
         }
         averageTreeSize = averageTreeSize / _currentPopulation.size();
 
@@ -159,7 +165,7 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
         int numberOfMembersRequired = operator.getInputCount();
 
         for (int i = 0; i < numberOfMembersRequired; i++) {
-            int chosenIndex = _randomNumberGenerator.nextInt(unvisitedMembers.size());
+            int chosenIndex = randomNumberGenerator.nextInt(unvisitedMembers.size());
             PopulationMember<T> chosenMember = unvisitedMembers.get(chosenIndex);
             unvisitedMembers.remove(chosenIndex);
 
@@ -209,7 +215,7 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
 
     @Override
     public ITreeGenerator<T> getTreeGenerator() {
-        return _generator;
+        return generator;
     }
 
     private List<PopulationMember<T>> getUnvisitedMembers() {

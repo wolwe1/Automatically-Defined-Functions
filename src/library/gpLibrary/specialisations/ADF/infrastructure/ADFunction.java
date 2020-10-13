@@ -7,34 +7,36 @@ public class ADFunction<T> extends ValueNode<T> {
 
     ValueNode<T> root;
 
-    protected ADFunction() {
-        super("Unimplemented");
+    protected ADFunction(String name) {
+        super(name);
     }
 
-    @Override
-    public boolean isFull() {
-
-        if(root == null)
-            return false;
-
-        return root.isFull();
+    public ADFunction(ADFunction<T> other) {
+        super(other.name);
+        root = (ValueNode<T>) other.root.getCopy(true);
     }
 
-    @Override
-    protected Node<T> getCopy() {
-        if(root == null) throw new RuntimeException("Function does not contain definition");
 
-        return root.getCopy(true);
+    @Override
+    public ADFunction<T> getCopy() {
+        return new ADFunction<>(this);
     }
 
     @Override
     public boolean canTakeMoreChildren() {
+        if(root == null)
+            return false;
+
         return root.canTakeMoreChildren();
     }
 
     @Override
     public boolean requiresTerminals(int maxDepth) {
-        return root.requiresTerminals(maxDepth);
+
+        if(root == null)
+            return false;
+
+        return root.requiresTerminals(maxDepth - 1);
     }
 
     @Override
@@ -48,6 +50,12 @@ public class ADFunction<T> extends ValueNode<T> {
     }
 
     @Override
+    public boolean isFull() {
+        return root.isFull();
+    }
+
+
+    @Override
     public T getValue() {
         return root.getValue();
     }
@@ -55,9 +63,5 @@ public class ADFunction<T> extends ValueNode<T> {
     @Override
     public T getBaseValue() {
         return root.getBaseValue();
-    }
-
-    public int getSize() {
-        return root.getSize();
     }
 }

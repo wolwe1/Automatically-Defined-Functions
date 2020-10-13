@@ -5,15 +5,17 @@ import library.gpLibrary.functionality.implementation.TreeCombinationVisitor;
 import library.gpLibrary.functionality.interfaces.ITreeVisitor;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 public abstract class NodeTree<T>
 {
     //Structure
-    //public  Node<T> root;
     public int depth;
-    public final int maxDepth;
-    public final int maxBreadth;
+    public int maxDepth;
+    public int maxBreadth;
 
-    protected final int _maxNodes;
+    protected int _maxNodes;
     protected int numberOfNodes;
 
     public NodeTree(int maxDepth,int maxBreadth)
@@ -24,6 +26,14 @@ public abstract class NodeTree<T>
         numberOfNodes = 0;
         //root = null;
         _maxNodes = calculateMaximumSize(maxBreadth,maxDepth);
+    }
+
+    /**
+     * Delegate depth and breadth calculations to sub classes
+     */
+    protected NodeTree(){
+        depth = 0;
+        numberOfNodes = 0;
     }
 
     /**
@@ -39,24 +49,48 @@ public abstract class NodeTree<T>
         _maxNodes = other._maxNodes;
     }
 
-    /**
-     * Returns the amount of nodes in the tree
-     * @return The amount of nodes in the tree
-     */
-    public abstract int getTreeSize();
+    public int getSize()
+    {
+        return getRoot().getSize();
+    }
 
-    /**
-     * Adds a node into the tree, breadth first manner
-     * @param node The node to be added
-     * @throws Exception If the tree is full
-     */
-    public abstract void addNode(Node<T> node) throws Exception;
+    public void addNode(Node<T> node) throws Exception {
+        if (isFull())
+            throw new Exception("Tree full");
 
-    /**
-     * This function allows for a visitor to perform an action on the trees members, breadth first
-     * @param visitor The visitor object that will have its visit function called on every node
-     */
-    public abstract void visitTree(ITreeVisitor<T> visitor);
+        //Empty tree
+        if (getRoot() == null)
+        {
+            node._level = 0;
+            setRoot(node);
+        }
+        else
+        {
+            breadthFirstInsert(node);
+        }
+        numberOfNodes++;
+    }
+
+    protected abstract void setRoot(Node<T> node);
+
+    public void visitTree(ITreeVisitor<T> visitor)
+    {
+        Queue<Node<T>> queue = new ArrayDeque<>();
+        Node<T> temp;
+
+        if(getRoot() == null) return;
+
+        queue.add(getRoot());
+
+        while (queue.size() != 0)
+        {
+            temp = queue.remove();
+
+            visitor.visit(temp);
+
+            queue.addAll(temp.getChildren());
+        }
+    }
 
     /**
      * Returns the total amount of possible leaf nodes the tree can contain
@@ -85,31 +119,25 @@ public abstract class NodeTree<T>
     }
 
 
-    /**
-     * Counts the number of nodes in the tree
-     * @param node The root of the tree
-     * @return The amount of nodes in the tree
-     */
-    protected int sumNodes(Node<T> node)
-    {
-        int total = 0;
+    protected void breadthFirstInsert(Node<T> node) throws Exception {
+        Queue<Node<T>> queue = new ArrayDeque<>();
+        Node<T> temp;
 
-        if (node == null)
-            return 0;
+        queue.add(getRoot());
 
-        for(var child : node.getChildren())
+        while (queue.size() != 0)
         {
-            total += sumNodes(child);
-        }
-        return total + 1;
-    }
+            temp = queue.remove();
 
-    /**
-     * Inserts a new node into the tree, breadth first manner
-     * @param node The node to be added to the tree
-     * @throws Exception If the tree is full
-     */
-    protected abstract void breadthFirstInsert(Node<T> node) throws Exception;
+            if (!temp.isFull())
+            {
+                temp.addChild(node);
+                return;
+            }
+
+            queue.addAll(temp.getChildren());
+        }
+    }
 
     /**
      * Returns a string representing the tree's members, in breadth first order
@@ -132,7 +160,9 @@ public abstract class NodeTree<T>
         return visitor.getNode(nodeIndex);
     }
 
-    public abstract void clearLeaves();
+    public void clearLeaves() {
+        getRoot().removeLeaves();
+    }
 
     public abstract NodeTree<T> getCopy();
 
@@ -140,11 +170,21 @@ public abstract class NodeTree<T>
         return _maxNodes;
     }
 
-    public abstract void replaceNode(int nodeToReplace, Node<T> newNode);
+    public void replaceNode(int nodeToReplace, Node<T> newNode) {
 
-    public abstract boolean IsFull();
+        Node<T> nodeInTree = getNode(nodeToReplace);
+        nodeInTree.Parent.setChild(nodeInTree.index,newNode);
+    }
+
+    public abstract boolean isFull();
 
     public abstract boolean requiresTerminals();
 
-    public abstract boolean isValid();
+    public boolean isValid() {
+        return getRoot().isValid();
+    }
+
+    public abstract Node<T> getRoot();
+
+    public abstract boolean acceptsNode(Node<T> nodeToAdd);
 }

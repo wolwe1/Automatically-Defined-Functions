@@ -20,4 +20,6 @@ public interface ITreeGenerator<T> {
     List<NodeTree<T>> replaceSubTrees(PopulationMember<T> first, PopulationMember<T> second);
 
     NodeTree<T> fillTree(NodeTree<T> mutatedChromosome);
+
+    void setSeed(long seed);
 }

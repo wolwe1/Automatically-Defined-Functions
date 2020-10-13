@@ -1,5 +1,7 @@
 package library.gpLibrary.helpers;
 
+import library.gpLibrary.models.primitives.enums.PrintLevel;
+
 import java.util.List;
 
 public class RunInfo {
@@ -10,6 +12,11 @@ public class RunInfo {
     private int populationSize = 1;
     private int numberOfGenerations = 1;
     private int numberOfRuns = 1;
+
+    private double crossoverRate;
+    private double mutationRate;
+    private double reproductionRate;
+    private PrintLevel displayType;
 
     public List<String> getTrainData() {
         return trainData;
@@ -51,5 +58,36 @@ public class RunInfo {
         this.numberOfRuns = numberOfRuns;
     }
 
+    public double getCrossoverRate() {
+        return this.crossoverRate;
+    }
+
+    public void setCrossoverRate(double crossoverRate) {
+        this.crossoverRate = crossoverRate;
+    }
+
+    public double getMutationRate() {
+        return mutationRate;
+    }
+
+    public void setMutationRate(double mutationRate) {
+        this.mutationRate = mutationRate;
+    }
+
+    public double getReproductionRate() {
+        return reproductionRate;
+    }
+
+    public void setReproductionRate(double reproductionRate) {
+        this.reproductionRate = reproductionRate;
+    }
+
+    public PrintLevel getDisplayType() {
+        return displayType;
+    }
+
+    public void setDisplayType(PrintLevel displayType) {
+        this.displayType = displayType;
+    }
 }
 

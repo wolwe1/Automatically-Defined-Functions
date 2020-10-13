@@ -1,6 +1,5 @@
 package library.gpLibrary.specialisations.classification;
 
-import library.gpLibrary.functionality.interfaces.ITreeVisitor;
 import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.ChoiceNode;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
@@ -24,72 +23,8 @@ public class ClassificationTree<T> extends NodeTree<T> {
         return root.feed(problem);
     }
 
-
-    @Override
-    public int getTreeSize()
-    {
-        return sumNodes(root);
-    }
-
-    @Override
-    public void addNode(Node<T> node) throws Exception {
-        if (IsFull())
-            throw new Exception("Tree full");
-
-        //Empty tree
-        if (root == null)
-        {
-            node._level = 0;
-            root = (ChoiceNode<T>) node;
-        }
-        else
-        {
-            breadthFirstInsert(node);
-        }
-        numberOfNodes++;
-    }
-
-    @Override
-    public void visitTree(ITreeVisitor<T> visitor)
-    {
-        Queue<Node<T>> queue = new ArrayDeque<>();
-        Node<T> temp;
-
-        queue.add(root);
-
-        while (queue.size() != 0)
-        {
-            temp = queue.remove();
-
-            visitor.visit(temp);
-
-            queue.addAll(temp.getChildren());
-        }
-    }
-
-    protected void breadthFirstInsert(Node<T> node) throws Exception {
-        Queue<Node<T>> queue = new ArrayDeque<>();
-        Node<T> temp;
-
-        queue.add(root);
-
-        while (queue.size() != 0)
-        {
-            temp = queue.remove();
-
-            if (!temp.isFull())
-            {
-                temp.addChild(node);
-                return;
-            }
-
-            queue.addAll(temp.getChildren());
-        }
-    }
-
-    @Override
-    public void clearLeaves() {
-        root.removeLeaves();
+    public void setRoot(Node<T> node) {
+        root = (ChoiceNode<T>) node;
     }
 
     public NodeTree<T> getCopy(){
@@ -104,14 +39,7 @@ public class ClassificationTree<T> extends NodeTree<T> {
     }
 
     @Override
-    public void replaceNode(int nodeToReplace, Node<T> newNode) {
-
-        Node<T> nodeInTree = getNode(nodeToReplace);
-        nodeInTree.Parent.setChild(nodeInTree.index,newNode);
-    }
-
-    @Override
-    public boolean IsFull() {
+    public boolean isFull() {
         if(root == null)
             return false;
 
@@ -127,8 +55,8 @@ public class ClassificationTree<T> extends NodeTree<T> {
     }
 
     @Override
-    public boolean isValid() {
-        return root.isValid();
+    public Node<T> getRoot() {
+        return root;
     }
 
     /**

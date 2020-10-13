@@ -13,7 +13,7 @@ import java.util.HashMap;
 public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
 
     protected HashMap<String, IGeneticOperator<T>> _operators;
-    protected IPopulationManager<T> _populationManager;
+    protected IPopulationManager<T> populationManager;
 
     protected int _populationSize;
     protected int _numGenerations;
@@ -28,13 +28,13 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
     public GeneticAlgorithm(int populationSize,int numberOfGenerations,IPopulationManager<T> populationManager){
         _populationSize = populationSize;
         _numGenerations = numberOfGenerations;
-        _populationManager = populationManager;
+        this.populationManager = populationManager;
 
         _fixedPopulation = true;
         _printLevel = PrintLevel.ALL;
 
         _operators = new HashMap<>();
-        _operators.put("Random", Create.create(populationSize,0d,_populationManager.getTreeGenerator()));
+        _operators.put("Random", Create.create(populationSize,0d, this.populationManager.getTreeGenerator()));
     }
 
     /**
@@ -45,7 +45,7 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
     public PopulationMember<T> performGeneration(int i) {
 
         //Prerequisites
-        PopulationMember<T> bestTreeInGeneration = _populationManager.getBest();
+        PopulationMember<T> bestTreeInGeneration = populationManager.getBest();
         display(i,bestTreeInGeneration);
         evolve();
 
@@ -57,10 +57,10 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
         evaluatePopulationIntegrity();
 
         for (IGeneticOperator<T> operator : _operators.values()) {
-            _populationManager.operateOnPopulation(operator);
+            populationManager.operateOnPopulation(operator);
         }
 
-        _populationManager.setNewPopulation();
+        populationManager.setNewPopulation();
     }
 
     /**
@@ -69,19 +69,19 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
      */
     public PopulationMember<T> run() {
 
-        if(_populationManager == null) throw new RuntimeException("Population manager was not initialised");
+        if(populationManager == null) throw new RuntimeException("Population manager was not initialised");
 
         PopulationMember<T> bestPerformer = null;
         int bestPerformingGeneration = 0;
 
-        _populationManager.reset();
-        _populationManager.createPopulation(_populationSize);
+        populationManager.reset();
+        populationManager.createPopulation(_populationSize);
 
 
         for (int i = 0; i < _numGenerations; i++) {
             PopulationMember<T> best = performGeneration(i);
 
-            if(_populationManager.firstFitterThanSecond(best,bestPerformer)){
+            if(populationManager.firstFitterThanSecond(best,bestPerformer)){
                 bestPerformer = best;
                 bestPerformingGeneration = i;
             }
@@ -94,6 +94,7 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
         newOperator.setPopulationSize(_populationSize);
         _operators.put(newOperator.getName(),newOperator);
     }
+
     /**
      * Prints out the population histories statistics
      * @param bestPerformer The best performing member of the run
@@ -109,7 +110,7 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
 //        if(_printLevel == PrintLevel.MINOR)
 //            _populationManager.printBasicHistory();
 //        else
-            _populationManager.printFullHistory();
+            populationManager.printFullHistory();
 
         Printer.printLine();
         Printer.print("The best tree was found in generation" + bestPerformingGeneration + " :" + bestPerformer.getId());
@@ -147,10 +148,10 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
 
 
         Printer.print("Statistics:");
-        _populationManager.printPopulationStatistics();
+        populationManager.printPopulationStatistics();
 
         if(_printLevel == PrintLevel.MAJOR) return;
-        _populationManager.printPopulationComposition();
+        populationManager.printPopulationComposition();
         Printer.printLine();
     }
 
@@ -167,7 +168,7 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
      * @param populationManager The new population manager
      */
     public void setPopulationManager(IPopulationManager<T> populationManager){
-        _populationManager = populationManager;
+        this.populationManager = populationManager;
     }
 
     /**
@@ -178,5 +179,12 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
         _printLevel = level;
     }
 
-
+    /**
+     * Sets the seed for all internal parts
+     * @param seed The seed value
+     */
+    @Override
+    public void setSeed(long seed) {
+        this.populationManager.setSeed(seed);
+    }
 }

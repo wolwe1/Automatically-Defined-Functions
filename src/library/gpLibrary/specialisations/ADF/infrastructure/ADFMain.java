@@ -1,68 +1,55 @@
 package library.gpLibrary.specialisations.ADF.infrastructure;
 
+import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.ValueNode;
 
-public class ADFMain<T> extends ValueNode<T> {
+public class ADFMain<T> extends NodeTree<T> {
 
     ValueNode<T> root;
 
-    protected ADFMain() {
-        super("Main");
+    public ADFMain(int maxDepth, int maxBreadth) {
+        super(maxDepth, maxBreadth);
     }
 
-    public ADFMain(ADFMain<T> other) {
-        super(other.name);
-        root = (ValueNode<T>) other.root.getCopy(true);
-    }
+    public ADFMain(NodeTree<T> other) {
+        super(other);
 
-    @Override
-    public boolean isFull() {
-        if(root == null)
-            return false;
-
-        return root.isFull();
+        root = (ValueNode<T>) other.getRoot().getCopy(true);
     }
 
     @Override
-    protected Node<T> getCopy() {
+    protected void setRoot(Node<T> node) {
+        root = (ValueNode<T>) node;
+    }
+
+    @Override
+    public NodeTree<T> getCopy() {
         return new ADFMain<>(this);
     }
 
     @Override
-    public boolean canTakeMoreChildren() {
+    public boolean isFull() {
+        return root.isFull();
+    }
+
+    @Override
+    public boolean requiresTerminals() {
         if(root == null)
-            return true;
+            return false;
 
-        return root.canTakeMoreChildren();
+        return root.requiresTerminals(maxDepth - 1);
     }
 
     @Override
-    public boolean requiresTerminals(int maxDepth) {
-        if(root == null) return false;
-
-        return root.requiresTerminals(maxDepth);
+    public Node<T> getRoot() {
+        return root;
     }
 
+    //Main accepts all nodes
     @Override
-    public boolean hasAncestor(Node<T> nodeToAdd) {
-        return false;
+    public boolean acceptsNode(Node<T> nodeToAdd) {
+        return true;
     }
 
-    @Override
-    public boolean isValid() {
-        if(root == null) return false;
-
-        return root.isValid();
-    }
-
-    @Override
-    public T getValue() {
-        return root.getValue();
-    }
-
-    @Override
-    public T getBaseValue() {
-        return root.getBaseValue();
-    }
 }
