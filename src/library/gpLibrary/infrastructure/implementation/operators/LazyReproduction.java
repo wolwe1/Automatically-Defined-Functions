@@ -14,8 +14,8 @@ public class LazyReproduction<T> extends GeneticOperator<T> {
     private int tournamentSize;
     private IFitnessFunction<T> fitnessFunction;
 
-    protected LazyReproduction(int tournamentSize,int input,int output,int populationSize,IFitnessFunction<T> fitnessFunction){
-        super("Lazy reproduction",input,output,populationSize);
+    protected LazyReproduction(int tournamentSize, int input, int output, int populationSize, IFitnessFunction<T> fitnessFunction, double percentageOfPopulation){
+        super("Lazy reproduction",input,output,populationSize,percentageOfPopulation);
         this.tournamentSize = tournamentSize;
         this.fitnessFunction = fitnessFunction;
     }
@@ -27,7 +27,7 @@ public class LazyReproduction<T> extends GeneticOperator<T> {
             input--;
 
         int output = input / tournamentSize;
-        return new LazyReproduction<>(tournamentSize,input,output,populationSize,fitnessFunction);
+        return new LazyReproduction<>(tournamentSize,input,output,populationSize,fitnessFunction,percentageOfPopulation);
     }
 
     @Override

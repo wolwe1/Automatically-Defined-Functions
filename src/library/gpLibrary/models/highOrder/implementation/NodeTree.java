@@ -6,6 +6,7 @@ import library.gpLibrary.functionality.interfaces.ITreeVisitor;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 
 public abstract class NodeTree<T>
@@ -187,4 +188,6 @@ public abstract class NodeTree<T>
     public abstract Node<T> getRoot();
 
     public abstract boolean acceptsNode(Node<T> nodeToAdd);
+
+    public abstract void addNodes(List<? extends Node<T>> nodesToLoad);
 }

@@ -24,7 +24,7 @@ public abstract class IFeedDownFunction<T> extends ChoiceNode<T> {
 
         for (int i = 0, choicesSize = choices.size(); i < choicesSize; i++) {
             T choice = choices.get(i);
-            ChoiceNode<T> child = (ChoiceNode<T>) _children.get(i);
+            ChoiceNode<T> child = (ChoiceNode<T>) children.get(i);
 
             if(choice.equals(valueToSwitchOn))
                 return child.feed(problem);
@@ -36,6 +36,6 @@ public abstract class IFeedDownFunction<T> extends ChoiceNode<T> {
 
     @Override
     public boolean isFull(){
-        return _children.size() == _maxChildren;
+        return children.size() == _maxChildren;
     }
 }

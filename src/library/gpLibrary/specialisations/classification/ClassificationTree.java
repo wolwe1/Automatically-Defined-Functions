@@ -5,6 +5,7 @@ import library.gpLibrary.models.primitives.nodes.abstractClasses.ChoiceNode;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
 
 import java.util.ArrayDeque;
+import java.util.List;
 import java.util.Queue;
 
 public class ClassificationTree<T> extends NodeTree<T> {
@@ -67,6 +68,17 @@ public class ClassificationTree<T> extends NodeTree<T> {
     public boolean acceptsNode(Node<T> nodeToAdd) {
         Node<T> nodeThatWillAcceptChild = getNextNodeForInsert();
         return !nodeThatWillAcceptChild.hasAncestor(nodeToAdd);
+    }
+
+    @Override
+    public void addNodes(List<? extends Node<T>> nodesToLoad) {
+        for (Node<T> node : nodesToLoad) {
+            try {
+                root.addChild(node);
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to load nodes");
+            }
+        }
     }
 
     private Node<T> getNextNodeForInsert() {

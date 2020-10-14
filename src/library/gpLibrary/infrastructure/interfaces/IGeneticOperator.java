@@ -18,4 +18,6 @@ public interface IGeneticOperator<T> {
     String getName();
 
     void setPopulationSize(int populationSize);
+
+    double getRate();
 }

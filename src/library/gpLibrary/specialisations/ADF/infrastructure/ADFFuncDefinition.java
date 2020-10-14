@@ -16,6 +16,7 @@ public class ADFFuncDefinition<T> extends NodeTree<T> {
         super(maxDepth,maxBreadth);
 
         arguments = new ArrayList<>();
+        function = new ADFunction<>("ADF0");
     }
 
     public ADFFuncDefinition(ADFFuncDefinition<T> other) {
@@ -36,7 +37,7 @@ public class ADFFuncDefinition<T> extends NodeTree<T> {
 
     @Override
     public boolean isFull() {
-        return function.root.isFull();
+        return function.isFull();
     }
 
     @Override
@@ -52,5 +53,16 @@ public class ADFFuncDefinition<T> extends NodeTree<T> {
     @Override
     public boolean acceptsNode(Node<T> nodeToAdd) {
         return true;
+    }
+
+    @Override
+    public void addNodes(List<? extends Node<T>> nodesToLoad) {
+        for (Node<T> node : nodesToLoad) {
+            try {
+                function.root.addChild(node);
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to load nodes");
+            }
+        }
     }
 }

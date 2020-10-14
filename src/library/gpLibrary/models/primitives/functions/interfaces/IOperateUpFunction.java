@@ -13,10 +13,10 @@ public abstract class IOperateUpFunction<T> extends ValueNode<T> {
      * Specifies the operation performed by the function
      * @return The calculated value by performing the operation
      */
-    abstract void Operation();
+    public abstract T Operation();
 
     @Override
     public boolean isFull() {
-        return _children.size() == _maxChildren;
+        return children.size() == _maxChildren;
     }
 }

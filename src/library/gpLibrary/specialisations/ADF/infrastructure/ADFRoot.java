@@ -3,6 +3,8 @@ package library.gpLibrary.specialisations.ADF.infrastructure;
 import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
 
+import java.util.List;
+
 public class ADFRoot<T> extends NodeTree<T> {
 
     private final ADFFuncDefinition<T> definition;
@@ -82,6 +84,12 @@ public class ADFRoot<T> extends NodeTree<T> {
             return main.acceptsNode(nodeToAdd);
         else
             return definition.acceptsNode(nodeToAdd);
+    }
+
+    @Override
+    public void addNodes(List<? extends Node<T>> nodesToLoad) {
+
+        definition.addNodes(nodesToLoad);
     }
 
 }

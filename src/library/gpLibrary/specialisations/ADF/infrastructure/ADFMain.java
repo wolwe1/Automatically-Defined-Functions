@@ -4,6 +4,8 @@ import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.ValueNode;
 
+import java.util.List;
+
 public class ADFMain<T> extends NodeTree<T> {
 
     ValueNode<T> root;
@@ -50,6 +52,18 @@ public class ADFMain<T> extends NodeTree<T> {
     @Override
     public boolean acceptsNode(Node<T> nodeToAdd) {
         return true;
+    }
+
+    @Override
+    public void addNodes(List<? extends Node<T>> nodesToLoad) {
+
+        for (Node<T> node : nodesToLoad) {
+            try {
+                root.addChild(node);
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to load nodes");
+            }
+        }
     }
 
 }

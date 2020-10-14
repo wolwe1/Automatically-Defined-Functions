@@ -12,9 +12,14 @@ import library.gpLibrary.models.highOrder.implementation.FunctionalSet;
 import library.gpLibrary.models.highOrder.implementation.TerminalSet;
 import library.gpLibrary.models.primitives.IFitnessFunction;
 import library.gpLibrary.specialisations.ADF.ADFTreeGenerator;
-import u17112631.functions.PatientResult;
-import u17112631.functions.PatientVitalsFunction;
-import u17112631.functions.PatientVitalsFunctionSingleValue;
+import u17112631.functions.covid.primitives.AddFunction;
+import u17112631.functions.covid.primitives.DivisionFunction;
+import u17112631.functions.covid.primitives.MultiplicationFunction;
+import u17112631.functions.covid.primitives.SubtractFunction;
+import u17112631.functions.patientClassification.PatientResult;
+import u17112631.functions.patientClassification.PatientVitalsFunction;
+import u17112631.functions.patientClassification.PatientVitalsFunctionSingleValue;
+import u17112631.helpers.covid.CovidEntry;
 
 import java.util.Arrays;
 
@@ -24,7 +29,7 @@ public class Main {
     public static void main(String[] args) {
         long SEED = 1;
         SetupManager setupInfo = new SetupManager();
-        GeneticAlgorithm<String> geneticAlgorithm = setupGeneticAlgorithm(SEED,setupInfo);
+        GeneticAlgorithm<Double> geneticAlgorithm = setupGeneticAlgorithm(SEED,setupInfo);
 
         for (int i = 0; i < setupInfo.getInfo().getNumberOfRuns(); i++) {
             geneticAlgorithm.setSeed(i);
@@ -33,34 +38,59 @@ public class Main {
 	// write your code here
     }
 
-    private static GeneticAlgorithm<String> setupGeneticAlgorithm(long SEED,SetupManager setup) {
+    private static <T> GeneticAlgorithm<T> setupGeneticAlgorithm(long SEED,SetupManager setup) {
         SetupManager setupInfo = doSetup(setup);
-        IFitnessFunction<String> fitnessFunction = setup.createClassifierFitnessFunction("ADM-DECS",dataNames);
-
-        ITreeGenerator<String> treeGenerator = getTreeGenerator();
-
-        TreePopulationManager<String> populationManager = new TreePopulationManager<>(treeGenerator,fitnessFunction, SEED);
         RunInfo info = setupInfo.getInfo();
-        GeneticAlgorithm<String> geneticAlgorithm = new GeneticAlgorithm<>(info.getPopulationSize(),info.getNumberOfGenerations(),populationManager);
 
-        geneticAlgorithm.addOperator(Crossover.create(info.getPopulationSize(),info.getCrossoverRate(),treeGenerator));
-        geneticAlgorithm.addOperator(Mutation.create(info.getPopulationSize(),info.getMutationRate(),treeGenerator));
-        geneticAlgorithm.addOperator( LazyReproduction.create(2,info.getPopulationSize(),info.getReproductionRate(),fitnessFunction));
-        geneticAlgorithm.setPrintLevel(info.getDisplayType());
+        if(setupInfo.getInfo().getRuntType().equals("COVID")){
+            IFitnessFunction<Double> fitnessFunction = setup.createCovidFitnessFunction(new CovidEntry(),2);
+            ITreeGenerator<Double> treeGenerator = getCovidTreeGenerator();
+            TreePopulationManager<Double> populationManager = new TreePopulationManager<>(treeGenerator,fitnessFunction, SEED);
+            GeneticAlgorithm<Double> geneticAlgorithm = new GeneticAlgorithm<>(info.getPopulationSize(),info.getNumberOfGenerations(),populationManager);
 
-        return geneticAlgorithm;
+            geneticAlgorithm.addOperator(Crossover.create(info.getPopulationSize(),info.getCrossoverRate(),treeGenerator));
+            geneticAlgorithm.addOperator(Mutation.create(info.getPopulationSize(),info.getMutationRate(),treeGenerator));
+            geneticAlgorithm.addOperator( LazyReproduction.create(2,info.getPopulationSize(),info.getReproductionRate(),fitnessFunction));
+            geneticAlgorithm.setPrintLevel(info.getDisplayType());
 
+            return (GeneticAlgorithm<T>) geneticAlgorithm;
+
+        }else{
+            IFitnessFunction<String> fitnessFunction = setup.createClassifierFitnessFunction("ADM-DECS",dataNames);
+            ITreeGenerator<String> treeGenerator = getPatientTreeGenerator();
+            TreePopulationManager<String> populationManager = new TreePopulationManager<>(treeGenerator,fitnessFunction, SEED);
+            GeneticAlgorithm<String> geneticAlgorithm = new GeneticAlgorithm<>(info.getPopulationSize(),info.getNumberOfGenerations(),populationManager);
+
+            geneticAlgorithm.addOperator(Crossover.create(info.getPopulationSize(),info.getCrossoverRate(),treeGenerator));
+            geneticAlgorithm.addOperator(Mutation.create(info.getPopulationSize(),info.getMutationRate(),treeGenerator));
+            geneticAlgorithm.addOperator( LazyReproduction.create(2,info.getPopulationSize(),info.getReproductionRate(),fitnessFunction));
+            geneticAlgorithm.setPrintLevel(info.getDisplayType());
+
+            return (GeneticAlgorithm<T>) geneticAlgorithm;
+        }
+    }
+
+    private static ITreeGenerator<Double> getCovidTreeGenerator() {
+        FunctionalSet<Double> functionalSet = new FunctionalSet<>();
+        functionalSet.addFunction(new AddFunction());
+        functionalSet.addFunction(new SubtractFunction());
+        functionalSet.addFunction(new MultiplicationFunction());
+        functionalSet.addFunction(new DivisionFunction());
+
+        TerminalSet<Double> terminalSet = new TerminalSet<>();
+
+        return new ADFTreeGenerator<>(functionalSet,terminalSet);
     }
 
 
     private static SetupManager doSetup(SetupManager setup) {
-        setup.readDataFile(0.7);
+        setup.readDataFile(0.7,true);
         setup.setupGPParameters();
         return setup;
     }
 
 
-    private static ITreeGenerator<String> getTreeGenerator() {
+    private static ITreeGenerator<String> getPatientTreeGenerator() {
         FunctionalSet<String> functionalSet = new FunctionalSet<>();
         functionalSet.addFunction(new PatientVitalsFunction("L-CORE","L-CORE",Arrays.asList("high","mid","low")));
         functionalSet.addFunction(new PatientVitalsFunction("L-SURF","L-SURF",Arrays.asList("high","mid","low")));

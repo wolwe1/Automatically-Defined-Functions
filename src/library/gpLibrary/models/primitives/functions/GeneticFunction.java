@@ -14,6 +14,6 @@ public abstract class GeneticFunction<T> extends Node<T> {
 
     @Override
     public boolean isFull() {
-        return _children.size() == _maxChildren;
+        return children.size() == _maxChildren;
     }
 }

@@ -34,7 +34,7 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
         _printLevel = PrintLevel.ALL;
 
         _operators = new HashMap<>();
-        _operators.put("Random", Create.create(populationSize,0d, this.populationManager.getTreeGenerator()));
+        _operators.put("Create", Create.create(populationSize,0d, this.populationManager.getTreeGenerator()));
     }
 
     /**
@@ -69,6 +69,7 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
      */
     public PopulationMember<T> run() {
 
+        //Check conditions
         if(populationManager == null) throw new RuntimeException("Population manager was not initialised");
 
         PopulationMember<T> bestPerformer = null;

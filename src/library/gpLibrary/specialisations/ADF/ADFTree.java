@@ -4,6 +4,8 @@ import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
 import library.gpLibrary.specialisations.ADF.infrastructure.ADFRoot;
 
+import java.util.List;
+
 public class ADFTree<T> extends NodeTree<T> {
 
     private ADFRoot<T> root;
@@ -57,6 +59,11 @@ public class ADFTree<T> extends NodeTree<T> {
     @Override
     public boolean acceptsNode(Node<T> nodeToAdd) {
         throw new RuntimeException("Not implemented");
+    }
+
+    @Override
+    public void addNodes(List<? extends Node<T>> nodesToLoad) {
+        root.addNodes(nodesToLoad);
     }
 
 

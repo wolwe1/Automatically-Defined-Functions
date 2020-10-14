@@ -11,7 +11,7 @@ import java.util.List;
  */
 public abstract class Node<T>
 {
-    protected final List<Node<T>> _children;
+    protected final List<Node<T>> children;
 
     public Node<T> Parent;
     public final String name;
@@ -25,13 +25,13 @@ public abstract class Node<T>
     {
         _maxChildren = maxChildren;
         this.name = name;
-        _children = new ArrayList<>();
+        children = new ArrayList<>();
     }
 
     protected Node(String name)
     {
         this.name = name;
-        _children = new ArrayList<>();
+        children = new ArrayList<>();
     }
 
     protected Node(Node<T> other){
@@ -40,7 +40,7 @@ public abstract class Node<T>
         _drawPos = other._drawPos;
         _level = other._level;
 
-        _children = new ArrayList<>();
+        children = new ArrayList<>();
         name = other.name;
     }
 
@@ -50,19 +50,19 @@ public abstract class Node<T>
 
         newNode.Parent = this;
         newNode._level = _level + 1;
-        newNode.index = _children.size();
-        _children.add(newNode);
+        newNode.index = children.size();
+        children.add(newNode);
 
         return newNode;
     }
 
-    public List<Node<T>> getChildren(){ return _children; }
+    public List<Node<T>> getChildren(){ return children; }
 
     public Node<T> getChild(int index){
-        if (index >= _children.size())
+        if (index >= children.size())
             return null;
 
-        return _children.get(index);
+        return children.get(index);
     }
 
     public abstract boolean isFull();
@@ -76,21 +76,21 @@ public abstract class Node<T>
         newChild.Parent = this;
         newChild.index = index;
         newChild.setLevel(this._level + 1);
-        _children.set(index,newChild);
+        children.set(index,newChild);
     }
 
     private void setLevel(int level) {
         this._level = level;
 
-        for (Node<T> child : _children) {
+        for (Node<T> child : children) {
             child.setLevel(level + 1);
         }
     }
 
     public int getIndexOfChild(Node<T> child){
 
-        for (int i = 0, childrenSize = _children.size(); i < childrenSize; i++) {
-            Node<T> tNode = _children.get(i);
+        for (int i = 0, childrenSize = children.size(); i < childrenSize; i++) {
+            Node<T> tNode = children.get(i);
             if (tNode == child)
                 return i;
         }
@@ -99,13 +99,13 @@ public abstract class Node<T>
 
     public void removeChildren() {
         //Check children
-        for (int i = _children.size() - 1; i >= 0; i--) {
+        for (int i = children.size() - 1; i >= 0; i--) {
             removeChild(i);
         }
     }
 
     public Node<T> removeChild(int index){
-        return (index >= 0 && index < _children.size()) ? _children.remove(index) : null;
+        return (index >= 0 && index < children.size()) ? children.remove(index) : null;
     }
 
 
@@ -114,7 +114,7 @@ public abstract class Node<T>
 
         try{
             if(includeChildren){
-                for (Node<T> child : _children) {
+                for (Node<T> child : children) {
                     copy.addChild(child.getCopy(true));
                 }
             }
@@ -127,8 +127,8 @@ public abstract class Node<T>
 
     public void removeLeaves(){
 
-        for (int i = _children.size() - 1; i >= 0; i--) {
-            Node<T> child = _children.get(i);
+        for (int i = children.size() - 1; i >= 0; i--) {
+            Node<T> child = children.get(i);
 
             if (child instanceof TerminalNode)
                 removeChild(i);
@@ -149,7 +149,7 @@ public abstract class Node<T>
 
         int numberOfNodes = 1;
 
-        for (Node<T> child : _children) {
+        for (Node<T> child : children) {
             numberOfNodes += child.getSize();
         }
         return numberOfNodes;

@@ -12,8 +12,8 @@ public class Crossover<T> extends GeneticOperator<T> {
 
     private final ITreeGenerator<T> generator;
 
-    protected Crossover(int inputCount, int populationSize, ITreeGenerator<T> generator) {
-        super("Crossover", inputCount, inputCount, populationSize);
+    protected Crossover(int inputCount, int populationSize, ITreeGenerator<T> generator,double percentageOfPopulation) {
+        super("Crossover", inputCount, inputCount, populationSize,percentageOfPopulation);
         this.generator = generator;
     }
 
@@ -26,7 +26,7 @@ public class Crossover<T> extends GeneticOperator<T> {
             inputCount--;
         }
 
-        return new Crossover<>(inputCount,populationSize,generator);
+        return new Crossover<>(inputCount,populationSize,generator,percentageOfPopulation);
     }
 
     @Override

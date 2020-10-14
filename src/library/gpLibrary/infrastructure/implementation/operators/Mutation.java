@@ -12,14 +12,14 @@ public class Mutation<T> extends GeneticOperator<T> {
 
     private final ITreeGenerator<T> generator;
 
-    protected Mutation(int inputCount, int populationSize, ITreeGenerator<T> generator) {
-        super("Mutation", inputCount, inputCount, populationSize);
+    protected Mutation(int inputCount, int populationSize, ITreeGenerator<T> generator,double percentageOfPopulation) {
+        super("Mutation", inputCount, inputCount, populationSize,percentageOfPopulation);
         this.generator = generator;
     }
 
     public static <T> Mutation<T> create(int populationSize, double percentageOfThePopulation, ITreeGenerator<T> generator){
         int inputCount = (int)(populationSize * percentageOfThePopulation);
-        return new Mutation<>(inputCount,populationSize,generator);
+        return new Mutation<>(inputCount,populationSize,generator,percentageOfThePopulation);
     }
 
     @Override

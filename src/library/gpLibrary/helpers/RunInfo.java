@@ -17,6 +17,9 @@ public class RunInfo {
     private double mutationRate;
     private double reproductionRate;
     private PrintLevel displayType;
+    private String runtType;
+    private String trainCountry;
+    private String testCountry;
 
     public List<String> getTrainData() {
         return trainData;
@@ -88,6 +91,30 @@ public class RunInfo {
 
     public void setDisplayType(PrintLevel displayType) {
         this.displayType = displayType;
+    }
+
+    public void setRunType(String method) {
+        this.runtType = method;
+    }
+
+    public String getRuntType() {
+        return runtType;
+    }
+
+    public void setTrainCountry(String train) {
+        this.trainCountry = train;
+    }
+
+    public String getTrainCountry() {
+        return trainCountry;
+    }
+
+    public void setTestCountry(String testCountry) {
+        this.testCountry = testCountry;
+    }
+
+    public String getTestCountry() {
+        return testCountry;
     }
 }
 

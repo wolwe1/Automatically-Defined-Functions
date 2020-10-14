@@ -107,7 +107,7 @@ public class FileManager {
         System.out.println("Using source : " + baseDirectory + baseDataDirectory + fileName);
     }
 
-    public List<String> getData(){
+    public List<String> getData(boolean skipHeader){
 
         File myObj = new File(baseDirectory + baseDataDirectory + fileName);
         Scanner myReader = null;
@@ -118,6 +118,9 @@ public class FileManager {
         }
 
         List<String> lines = new ArrayList<>();
+
+        if (skipHeader)
+            myReader.nextLine();
 
         while (myReader.hasNextLine()) {
             String data = myReader.nextLine();

@@ -8,12 +8,14 @@ public abstract class GeneticOperator<T> implements IGeneticOperator<T> {
     protected int inputCount;
     protected int populationSize;
     protected String name;
+    protected double rate;
 
-    protected GeneticOperator(String name,int inputCount, int outputCount, int populationSize){
+    protected GeneticOperator(String name,int inputCount, int outputCount, int populationSize,double rate){
         this.name = name;
         this.inputCount = inputCount;
         this.outputCount = outputCount;
         this.populationSize = populationSize;
+        this.rate = rate;
     }
 
     @Override
@@ -40,4 +42,9 @@ public abstract class GeneticOperator<T> implements IGeneticOperator<T> {
     public void setPopulationSize(int populationSize) {
         this.populationSize = populationSize;
     }
+
+    public double getRate(){
+        return this.rate;
+    }
+
 }
