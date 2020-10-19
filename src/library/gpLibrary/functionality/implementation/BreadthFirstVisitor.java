@@ -8,19 +8,24 @@ import java.util.List;
 
 public class BreadthFirstVisitor<T> implements ITreeVisitor<T> {
 
-    private final List<Node<T>> _visitedNodes;
+    private final List<Node<T>> visitedNodes;
 
     public BreadthFirstVisitor(){
-        _visitedNodes = new ArrayList<>();
+        visitedNodes = new ArrayList<>();
     }
 
     @Override
     public void visit(Node<T> node) {
-        _visitedNodes.add(node);
+        visitedNodes.add(node);
+    }
+
+    @Override
+    public void clear() {
+        visitedNodes.clear();
     }
 
     public List<Node<T>> getNodes() {
-        return _visitedNodes;
+        return visitedNodes;
     }
 
     /**
@@ -30,9 +35,9 @@ public class BreadthFirstVisitor<T> implements ITreeVisitor<T> {
      */
     public Node<T> getNode(int index){
 
-        if(index >= _visitedNodes.size())
+        if(index >= visitedNodes.size())
             throw new RuntimeException("Attempted to access node that doesnt exist");
 
-        return _visitedNodes.get(index);
+        return visitedNodes.get(index);
     }
 }

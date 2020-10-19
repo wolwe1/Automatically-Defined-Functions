@@ -11,15 +11,14 @@ import library.gpLibrary.infrastructure.interfaces.ITreeGenerator;
 import library.gpLibrary.models.highOrder.implementation.FunctionalSet;
 import library.gpLibrary.models.highOrder.implementation.TerminalSet;
 import library.gpLibrary.models.primitives.IFitnessFunction;
+import library.gpLibrary.models.primitives.nodes.implementation.EmptyNode;
 import library.gpLibrary.specialisations.ADF.ADFTreeGenerator;
-import u17112631.functions.covid.primitives.AddFunction;
-import u17112631.functions.covid.primitives.DivisionFunction;
-import u17112631.functions.covid.primitives.MultiplicationFunction;
-import u17112631.functions.covid.primitives.SubtractFunction;
+import u17112631.covid.helpers.CovidEntry;
+import u17112631.covid.nodes.AddFunction;
+import u17112631.covid.nodes.SubtractFunction;
 import u17112631.functions.patientClassification.PatientResult;
 import u17112631.functions.patientClassification.PatientVitalsFunction;
 import u17112631.functions.patientClassification.PatientVitalsFunctionSingleValue;
-import u17112631.helpers.covid.CovidEntry;
 
 import java.util.Arrays;
 
@@ -74,12 +73,15 @@ public class Main {
         FunctionalSet<Double> functionalSet = new FunctionalSet<>();
         functionalSet.addFunction(new AddFunction());
         functionalSet.addFunction(new SubtractFunction());
-        functionalSet.addFunction(new MultiplicationFunction());
-        functionalSet.addFunction(new DivisionFunction());
+        //functionalSet.addFunction(new MultiplicationFunction());
+        //functionalSet.addFunction(new DivisionFunction());
 
         TerminalSet<Double> terminalSet = new TerminalSet<>();
+        terminalSet.addTerminal( new EmptyNode());
 
-        return new ADFTreeGenerator<>(functionalSet,terminalSet);
+        ADFTreeGenerator<Double> generator = new ADFTreeGenerator<>(functionalSet,terminalSet);
+        generator.setDepths(2,2,5,2);
+        return generator;
     }
 
 

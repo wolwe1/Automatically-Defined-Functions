@@ -1,4 +1,4 @@
-package u17112631.functions.covid.primitives;
+package u17112631.covid.nodes;
 
 import library.gpLibrary.models.primitives.functions.interfaces.IOperateUpFunction;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
@@ -38,18 +38,6 @@ public abstract class BasicFunction<T> extends IOperateUpFunction<T> {
     }
 
     @Override
-    public boolean hasAncestor(Node<T> nodeToAdd) {
-
-        if(nodeToAdd.name.equals(this.name))
-            return true;
-
-        if(this.Parent == null)
-            return false;
-
-        return this.Parent.hasAncestor(nodeToAdd);
-    }
-
-    @Override
     public boolean isValid() {
         if(children.size() != _maxChildren)
             return false;
@@ -60,5 +48,10 @@ public abstract class BasicFunction<T> extends IOperateUpFunction<T> {
         }
 
         return true;
+    }
+
+    @Override
+    public T getValue() {
+        return operation();
     }
 }

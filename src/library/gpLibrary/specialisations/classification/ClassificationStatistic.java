@@ -9,16 +9,24 @@ import java.util.Map;
 public class ClassificationStatistic implements IMemberStatistics<Double> {
 
     Map<String,Double> measures;
+    private String fitnessMeasure;
 
     public ClassificationStatistic(){
         measures = new HashMap<>();
         measures.put("Accuracy",0d);
         measures.put("Hits",0d);
+
+        fitnessMeasure = "MAE";
     }
 
     @Override
     public Double getFitness() {
-        return measures.get("Hits");
+        return measures.get(fitnessMeasure);
+    }
+
+    @Override
+    public void setFitness(String measure) {
+        this.fitnessMeasure = measure;
     }
 
     @Override

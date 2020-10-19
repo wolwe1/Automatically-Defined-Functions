@@ -5,6 +5,9 @@ import library.gpLibrary.models.highOrder.implementation.FunctionalSet;
 import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.highOrder.implementation.PopulationMember;
 import library.gpLibrary.models.highOrder.implementation.TerminalSet;
+import library.gpLibrary.specialisations.ADF.infrastructure.ADFFuncDefinition;
+import library.gpLibrary.specialisations.ADF.infrastructure.ADFMain;
+import library.gpLibrary.specialisations.ADF.infrastructure.ADFunction;
 
 import java.util.Arrays;
 import java.util.List;
@@ -34,13 +37,29 @@ public class ADFTreeGenerator<T> extends TreeGenerator<T> {
     public ADFTree<T> createRandom() {
         ADFTree<T> newTree = new ADFTree<>(maxFuncDepth,maxFuncBreadth,maxMainDepth,maxMainBreadth);
 
+        ADFFuncDefinition<T> functionDefinition = newTree.getFunctionDefinition();
+        ADFMain<T> main = newTree.getMain();
+
         try {
-            newTree.addNode(pickFunction());
+            functionDefinition.addNode(pickFunction()); //TODO: Ensure this sets function children
         }catch (Exception e){
             throw new RuntimeException("Unable to create tree root");
         }
 
-        return (ADFTree<T>) fillTree(newTree);
+        fillTree(functionDefinition);
+
+        ADFunction<T> func = functionDefinition.getFunction().getCopy();
+        func.removeLeaves();
+        functionalSet.addFunction(func);
+        try {
+            main.addNode(pickFunction());
+        }catch (Exception e){
+            throw new RuntimeException("Unable to create tree root");
+        }
+
+        fillTree(main);
+
+        return newTree;
     }
 
     @Override

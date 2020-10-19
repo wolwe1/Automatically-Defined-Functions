@@ -8,6 +8,7 @@ import java.util.Map;
 public class PopulationStatistics<T> implements IMemberStatistics<T> {
 
     Map<String,T> measures;
+    String fitnessMeasure;
 
     public PopulationStatistics(){
         measures = new HashMap<>();
@@ -15,7 +16,12 @@ public class PopulationStatistics<T> implements IMemberStatistics<T> {
 
     @Override
     public Double getFitness() {
-        throw new RuntimeException("Population statistics has no fitness");
+        return (Double) measures.get(fitnessMeasure);
+    }
+
+    @Override
+    public void setFitness(String measure){
+        fitnessMeasure = measure;
     }
 
     @Override

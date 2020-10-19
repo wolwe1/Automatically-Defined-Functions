@@ -110,7 +110,7 @@ public class FileManager {
     public List<String> getData(boolean skipHeader){
 
         File myObj = new File(baseDirectory + baseDataDirectory + fileName);
-        Scanner myReader = null;
+        Scanner myReader;
         try {
             myReader = new Scanner(myObj);
         } catch (FileNotFoundException e) {

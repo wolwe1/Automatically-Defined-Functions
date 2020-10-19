@@ -32,6 +32,9 @@ public class ADFMain<T> extends NodeTree<T> {
 
     @Override
     public boolean isFull() {
+        if(root == null)
+            return false;
+
         return root.isFull();
     }
 
@@ -64,6 +67,7 @@ public class ADFMain<T> extends NodeTree<T> {
                 throw new RuntimeException("Unable to load nodes");
             }
         }
+        numberOfNodes += nodesToLoad.size();
     }
 
 }

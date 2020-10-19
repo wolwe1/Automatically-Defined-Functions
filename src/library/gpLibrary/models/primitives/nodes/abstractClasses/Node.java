@@ -1,7 +1,5 @@
 package library.gpLibrary.models.primitives.nodes.abstractClasses;
 
-import library.gpLibrary.models.primitives.nodes.implementation.TerminalNode;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +11,7 @@ public abstract class Node<T>
 {
     protected final List<Node<T>> children;
 
-    public Node<T> Parent;
+    public Node<T> parent;
     public final String name;
     public int _maxChildren;
     public int _level = 0;
@@ -48,7 +46,7 @@ public abstract class Node<T>
 
         if (isFull()) throw new Exception("Node cannot have any more children");
 
-        newNode.Parent = this;
+        newNode.parent = this;
         newNode._level = _level + 1;
         newNode.index = children.size();
         children.add(newNode);
@@ -73,7 +71,7 @@ public abstract class Node<T>
         if(index < 0 || index >= _maxChildren)
             throw new RuntimeException("Attempted to set a child out of range");
 
-        newChild.Parent = this;
+        newChild.parent = this;
         newChild.index = index;
         newChild.setLevel(this._level + 1);
         children.set(index,newChild);
@@ -130,7 +128,7 @@ public abstract class Node<T>
         for (int i = children.size() - 1; i >= 0; i--) {
             Node<T> child = children.get(i);
 
-            if (child instanceof TerminalNode)
+            if (child._maxChildren == 0)
                 removeChild(i);
             else
                 child.removeLeaves();
@@ -141,7 +139,14 @@ public abstract class Node<T>
 
     public abstract boolean requiresTerminals(int maxDepth);
 
-    public abstract boolean hasAncestor(Node<T> nodeToAdd);
+    public boolean hasAncestor(Node<T> nodeToAdd) {
+
+        if(nodeToAdd.name.equals(name)) return true;
+
+        if(this.parent == null) return false;
+
+        return this.parent.hasAncestor(nodeToAdd);
+    }
 
     public abstract boolean isValid();
 

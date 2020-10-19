@@ -11,6 +11,8 @@ public interface IMemberStatistics<T> {
      */
     Double getFitness();
 
+    void setFitness(String measure);
+
     Map<String, T> getMeasures();
 
     Map.Entry<String, T> getMeasure(String key);

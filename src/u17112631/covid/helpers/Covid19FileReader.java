@@ -1,4 +1,4 @@
-package u17112631.helpers.covid;
+package u17112631.covid.helpers;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -9,6 +9,7 @@ public class ADFRoot<T> extends NodeTree<T> {
 
     private final ADFFuncDefinition<T> definition;
     private final ADFMain<T> main;
+    private boolean isDoingFuncInsert = true;
 
     public ADFRoot(int maxDepth, int maxBreadth, int maxMainDepth, int maxMainBreadth) {
         super();
@@ -35,10 +36,15 @@ public class ADFRoot<T> extends NodeTree<T> {
     @Override
     public void addNode(Node<T> node) throws Exception {
 
-        if(definition.isFull())
-            main.addNode(node);
-        else
+        if(isDoingFuncInsert){
             definition.addNode(node);
+            if(definition.isFull())
+                isDoingFuncInsert = false;
+        }else{
+            main.addNode(node);
+        }
+
+        numberOfNodes++;
     }
 
     @Override
@@ -65,7 +71,10 @@ public class ADFRoot<T> extends NodeTree<T> {
 
     @Override
     public boolean requiresTerminals() {
-        return definition.requiresTerminals() || main. requiresTerminals();
+        if(isDoingFuncInsert)
+            return definition.requiresTerminals();
+        else
+            return main. requiresTerminals();
     }
 
     @Override
@@ -75,21 +84,42 @@ public class ADFRoot<T> extends NodeTree<T> {
 
     @Override
     public Node<T> getRoot() {
-        throw new RuntimeException("Get root not defined on ADF root");
+        return main.getRoot();
     }
 
     @Override
     public boolean acceptsNode(Node<T> nodeToAdd) {
-        if(definition.isFull())
-            return main.acceptsNode(nodeToAdd);
-        else
+
+        if(isDoingFuncInsert)
             return definition.acceptsNode(nodeToAdd);
+        else
+            return main.acceptsNode(nodeToAdd);
     }
 
     @Override
     public void addNodes(List<? extends Node<T>> nodesToLoad) {
 
-        definition.addNodes(nodesToLoad);
+        if(isDoingFuncInsert)
+            definition.addNodes(nodesToLoad);
+        else
+            main.addNodes(nodesToLoad);
     }
 
+    public ADFFuncDefinition<T> getFunction() {
+        return definition;
+    }
+
+    public  ADFMain<T> getMain() {
+        return main;
+    }
+
+    @Override
+    public int getNumberOfPossibleLeafNodes() {
+        return main.getNumberOfPossibleLeafNodes();
+    }
+
+    public void removeLeaves() {
+        main.clearLeaves();
+        numberOfNodes = definition.getSize() + main.getSize();
+    }
 }

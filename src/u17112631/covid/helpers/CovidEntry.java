@@ -1,4 +1,4 @@
-package u17112631.helpers.covid;
+package u17112631.covid.helpers;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;

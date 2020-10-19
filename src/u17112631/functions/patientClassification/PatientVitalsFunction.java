@@ -43,17 +43,6 @@ public class PatientVitalsFunction extends IFeedDownFunction<String> {
         return false;
     }
 
-    @Override
-    public boolean hasAncestor(Node<String> nodeToAdd) {
-
-        if(nodeToAdd.name.equals(this.name))
-            return true;
-
-        if(this.Parent == null)
-            return false;
-
-        return this.Parent.hasAncestor(nodeToAdd);
-    }
 
     @Override
     public boolean isValid() {

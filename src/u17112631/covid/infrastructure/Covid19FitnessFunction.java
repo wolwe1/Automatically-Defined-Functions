@@ -1,4 +1,4 @@
-package u17112631.functions.covid;
+package u17112631.covid.infrastructure;
 
 import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.highOrder.implementation.PopulationMember;
@@ -6,6 +6,7 @@ import library.gpLibrary.models.highOrder.implementation.PopulationStatistics;
 import library.gpLibrary.models.highOrder.interfaces.IMemberStatistics;
 import library.gpLibrary.models.primitives.IFitnessFunction;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.ValueNode;
+import u17112631.covid.nodes.CovidTerminal;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,12 +44,17 @@ public class Covid19FitnessFunction implements IFitnessFunction<Double> {
         //Perform a sliding window comparison
         int endPointForTest = currentSet.size() - (numberOfDataPointsTreeCanContain + _lookAhead);
         for (int i = 0; i < endPointForTest; i++) {
+
+            populationMember.clearLeaves();
             //Load tree with data points
-            int lastIndexOfDayToUse = i + numberOfDataPointsTreeCanContain - 1;
+            int lastIndexOfDayToUse = i + numberOfDataPointsTreeCanContain;
+            if(constant != null)
+                lastIndexOfDayToUse--;
+
             double treeAnswer = getTreeAnswerOnNextSetOfData(populationMember,currentSet.subList(i,lastIndexOfDayToUse));
 
             treeAnswers.add(treeAnswer);
-            populationMember.clearLeaves();
+
         }
 
         return calculateTreePerformance(treeAnswers,answerSet);
@@ -69,6 +75,7 @@ public class Covid19FitnessFunction implements IFitnessFunction<Double> {
 
         treePerformance.setMeasure("MAE",mae);
         treePerformance.setMeasure("MSE",mse);
+        treePerformance.setFitness("MAE");
         return treePerformance;
     }
 

@@ -1,4 +1,4 @@
-package u17112631.helpers.covid;
+package u17112631.covid.helpers;
 
 public enum CovidPredictionMode {
 

@@ -138,6 +138,8 @@ public abstract class NodeTree<T>
 
             queue.addAll(temp.getChildren());
         }
+
+        throw new RuntimeException("The node was not able to be added");
     }
 
     /**
@@ -163,6 +165,7 @@ public abstract class NodeTree<T>
 
     public void clearLeaves() {
         getRoot().removeLeaves();
+        numberOfNodes = getSize();
     }
 
     public abstract NodeTree<T> getCopy();
@@ -174,7 +177,7 @@ public abstract class NodeTree<T>
     public void replaceNode(int nodeToReplace, Node<T> newNode) {
 
         Node<T> nodeInTree = getNode(nodeToReplace);
-        nodeInTree.Parent.setChild(nodeInTree.index,newNode);
+        nodeInTree.parent.setChild(nodeInTree.index,newNode);
     }
 
     public abstract boolean isFull();

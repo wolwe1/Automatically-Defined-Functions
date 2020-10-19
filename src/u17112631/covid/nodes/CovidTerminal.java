@@ -1,9 +1,8 @@
-package u17112631.functions.covid;
+package u17112631.covid.nodes;
 
-import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.ValueNode;
-import u17112631.helpers.covid.CovidEntry;
-import u17112631.helpers.covid.CovidPredictionMode;
+import u17112631.covid.helpers.CovidEntry;
+import u17112631.covid.helpers.CovidPredictionMode;
 
 public class CovidTerminal extends ValueNode<Double> {
 
@@ -50,11 +49,6 @@ public class CovidTerminal extends ValueNode<Double> {
     @Override
     public boolean requiresTerminals(int maxDepth) {
         throw new RuntimeException("Requires terminal called on terminal");
-    }
-
-    @Override
-    public boolean hasAncestor(Node<Double> nodeToAdd) {
-        return false;
     }
 
     @Override

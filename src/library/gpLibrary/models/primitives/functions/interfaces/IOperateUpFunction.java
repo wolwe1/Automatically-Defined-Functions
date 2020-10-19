@@ -13,7 +13,7 @@ public abstract class IOperateUpFunction<T> extends ValueNode<T> {
      * Specifies the operation performed by the function
      * @return The calculated value by performing the operation
      */
-    public abstract T Operation();
+    public abstract T operation();
 
     @Override
     public boolean isFull() {

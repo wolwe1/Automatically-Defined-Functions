@@ -1,4 +1,4 @@
-package u17112631.helpers.covid;
+package u17112631.covid.helpers;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

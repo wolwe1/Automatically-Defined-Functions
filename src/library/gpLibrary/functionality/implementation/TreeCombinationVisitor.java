@@ -8,16 +8,16 @@ import java.util.List;
 
 public class TreeCombinationVisitor<T> implements ITreeVisitor<T> {
 
-    private final List<Node<T>> _visitedNodes;
+    private final List<Node<T>> visitedNodes;
 
     public TreeCombinationVisitor(){
-        _visitedNodes = new ArrayList<>();
+        visitedNodes = new ArrayList<>();
     }
 
     public String getCombination() {
 
         var ret = new StringBuilder();
-        for (Node<T> visitedNode : _visitedNodes) {
+        for (Node<T> visitedNode : visitedNodes) {
             ret.append(visitedNode.name).append(".");
         }
         return ret.toString();
@@ -25,6 +25,11 @@ public class TreeCombinationVisitor<T> implements ITreeVisitor<T> {
 
     @Override
     public void visit(Node<T> temp) {
-        _visitedNodes.add(temp);
+        visitedNodes.add(temp);
+    }
+
+    @Override
+    public void clear() {
+        visitedNodes.clear();
     }
 }

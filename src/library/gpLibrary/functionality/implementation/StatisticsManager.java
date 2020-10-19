@@ -74,14 +74,14 @@ public class StatisticsManager {
 
         for (Map.Entry<String,Double> measure : possibleMeasures.entrySet()){
             //Set a measure of 0
-            Map.Entry<String,Double> averageForMeasure = new AbstractMap.SimpleEntry<>(measure.getKey(), 0d);
+            Map.Entry<String,Double> totalForMeasure = new AbstractMap.SimpleEntry<>(measure.getKey(), 0d);
 
             for (IMemberStatistics<Double> stat : members) {
-                Map.Entry<String,Double> measureForThisMember = stat.getMeasure(averageForMeasure.getKey());
+                Map.Entry<String,Double> measureForThisMember = stat.getMeasure(totalForMeasure.getKey());
 
-                averageForMeasure.setValue(averageForMeasure.getValue() + measureForThisMember.getValue());
+                totalForMeasure.setValue(totalForMeasure.getValue() + measureForThisMember.getValue());
             }
-            measures.put(averageForMeasure.getKey(),averageForMeasure.getValue());
+            measures.put(totalForMeasure.getKey(),totalForMeasure.getValue());
         }
 
         return measures;

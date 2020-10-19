@@ -122,6 +122,7 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
         for (PopulationMember<T> member : _currentPopulation) {
             String comp = member.getId();
             String[] items = comp.split("\\.");
+            items = stripAnnotations(items);
             numItems += items.length;
 
             for (String item : items) {
@@ -135,6 +136,18 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
         }
 
         return percentageComposition;
+    }
+
+    private String[] stripAnnotations(String[] items) {
+        List<String> nonAnnotatedItems = new ArrayList<>();
+
+        for (String item : items) {
+            if(!item.contains("["))
+                nonAnnotatedItems.add(item);
+        }
+
+        String[] arr = new String[nonAnnotatedItems.size()];
+        return nonAnnotatedItems.toArray(arr);
     }
 
     private double getAverageTreeSize(){

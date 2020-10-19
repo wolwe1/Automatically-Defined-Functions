@@ -27,6 +27,11 @@ public class TreePrinter implements ITreeVisitor<Double> {
         nodes.add(node);
     }
 
+    @Override
+    public void clear() {
+        nodes.clear();
+    }
+
     // The code below has been taken from https://prismoskills.appspot.com/lessons/Binary_Trees/Tree_printing.jsp
     // and adapted to fit my needs.
     // This code is not intended for marking or for any assessment and I do not claim it as my own!
@@ -77,36 +82,36 @@ public class TreePrinter implements ITreeVisitor<Double> {
             for (int i=0; i<(depth-ele._level+1); i++)
             {
                 int drawn = 0;
-                if (ele.Parent.getChild(0) != null)
+                if (ele.parent.getChild(0) != null)
                 {
-                    drawn = ele.Parent._drawPos - 2*i - 2;
+                    drawn = ele.parent._drawPos - 2*i - 2;
                     System.out.print(getSpace(drawn) + "/");
                 }
-                if (ele.Parent.getChild(1) != null)
+                if (ele.parent.getChild(1) != null)
                 {
-                    int drawn2 = ele.Parent._drawPos + 2*i + 2;
+                    int drawn2 = ele.parent._drawPos + 2*i + 2;
                     System.out.print(getSpace(drawn2 - drawn) + "\\");
                     drawn = drawn2;
                 }
 
-                Node<Double> doneParent = ele.Parent;
+                Node<Double> doneParent = ele.parent;
                 for (Node<Double>  sibling: q)
                 {
                     if (sibling == null)
                         continue;
-                    if (sibling.Parent == doneParent)
+                    if (sibling.parent == doneParent)
                         continue;
-                    doneParent = sibling.Parent;
-                    if (sibling.Parent.getChild(0) != null)
+                    doneParent = sibling.parent;
+                    if (sibling.parent.getChild(0) != null)
                     {
-                        int drawn2 = sibling.Parent._drawPos - 2*i - 2;
+                        int drawn2 = sibling.parent._drawPos - 2*i - 2;
                         System.out.print(getSpace(drawn2-drawn-1) + "/");
                         drawn = drawn2;
                     }
 
-                    if (sibling.Parent.getChild(1) != null)
+                    if (sibling.parent.getChild(1) != null)
                     {
-                        int drawn2 = sibling.Parent._drawPos + 2*i + 2;
+                        int drawn2 = sibling.parent._drawPos + 2*i + 2;
                         System.out.print(getSpace(drawn2-drawn-1) + "\\");
                         drawn = drawn2;
                     }
@@ -116,15 +121,15 @@ public class TreePrinter implements ITreeVisitor<Double> {
         }
         int offset=0;
         int numDigits = ele.name.length();
-        if (ele.Parent.getChild(0) == ele)
+        if (ele.parent.getChild(0) == ele)
         {
-            ele._drawPos = ele.Parent._drawPos - H_SPREAD*(depth-currDrawLevel+1);
+            ele._drawPos = ele.parent._drawPos - H_SPREAD*(depth-currDrawLevel+1);
             //offset = 2;
             offset += numDigits/2;
         }
         else
         {
-            ele._drawPos = ele.Parent._drawPos + H_SPREAD*(depth-currDrawLevel+1);
+            ele._drawPos = ele.parent._drawPos + H_SPREAD*(depth-currDrawLevel+1);
             //offset = -2;
             offset -= numDigits;
         }

@@ -5,10 +5,10 @@ import library.gpLibrary.models.primitives.enums.PrintLevel;
 import library.gpLibrary.specialisations.classification.ClassifierFitnessFunction;
 import library.gpLibrary.specialisations.classification.ProblemSet;
 import library.helpers.FileManager;
-import u17112631.functions.covid.Covid19FitnessFunction;
-import u17112631.functions.covid.CovidTerminal;
-import u17112631.helpers.covid.CovidEntry;
-import u17112631.helpers.covid.IFileEntry;
+import u17112631.covid.helpers.CovidEntry;
+import u17112631.covid.helpers.IFileEntry;
+import u17112631.covid.infrastructure.Covid19FitnessFunction;
+import u17112631.covid.nodes.CovidTerminal;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -62,6 +62,10 @@ public class SetupManager {
             info.setReproductionRate(reproductionRate);
             info.setDisplayType(PrintLevel.ALL);
             info.setRunType("COVID");
+
+            info.setTrainCountry("South Africa");
+            info.setTestCountry("Nigeria");
+
         }else{
             int populationSize = (int) getNumericInput("Population size:");
             int numberOfGenerations = (int) getNumericInput("Number of generations:");
@@ -94,14 +98,14 @@ public class SetupManager {
             info.setReproductionRate(reproductionRate);
             info.setDisplayType(PrintLevel.valueOf(displayType));
             info.setRunType(method);
-        }
 
-        if(info.getRuntType() == "COVID"){
-            String trainCountry = getStringInput("Please select a country to train on:");
-            String testCountry = getStringInput("Please select a country to test on:");
+            if(info.getRuntType() == "COVID"){
+                String trainCountry = getStringInput("Please select a country to train on:");
+                String testCountry = getStringInput("Please select a country to test on:");
 
-            info.setTrainCountry(trainCountry);
-            info.setTestCountry(testCountry);
+                info.setTrainCountry(trainCountry);
+                info.setTestCountry(testCountry);
+            }
         }
 
     }
