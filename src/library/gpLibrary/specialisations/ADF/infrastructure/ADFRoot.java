@@ -23,8 +23,9 @@ public class ADFRoot<T> extends NodeTree<T> {
     public ADFRoot(ADFRoot<T> other) {
         super(other.maxDepth,other.maxBreadth);
 
-        definition = (ADFFuncDefinition<T>) other.definition.getCopy();
+        definition = other.definition.getCopy();
         main = (ADFMain<T>) other.main.getCopy();
+        isDoingFuncInsert = other.isDoingFuncInsert;
     }
 
 
@@ -114,12 +115,21 @@ public class ADFRoot<T> extends NodeTree<T> {
     }
 
     @Override
-    public int getNumberOfPossibleLeafNodes() {
-        return main.getNumberOfPossibleLeafNodes();
+    public int getMaximumNumberOfPossibleLeafNodes() {
+        return main.getMaximumNumberOfPossibleLeafNodes();
+    }
+
+    @Override
+    public int getNumberOfLeafNodes(){
+        return main.getNumberOfLeafNodes();
     }
 
     public void removeLeaves() {
         main.clearLeaves();
         numberOfNodes = definition.getSize() + main.getSize();
+    }
+
+    public void useMain(){
+        isDoingFuncInsert = false;
     }
 }

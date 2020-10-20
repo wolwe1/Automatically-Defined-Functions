@@ -32,4 +32,9 @@ public class EmptyNode extends Node<Double> {
     public boolean isValid() {
         return true;
     }
+
+    @Override
+    public int countLeaves() {
+        return 1;
+    }
 }

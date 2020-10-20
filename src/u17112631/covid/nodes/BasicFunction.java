@@ -54,4 +54,14 @@ public abstract class BasicFunction<T> extends IOperateUpFunction<T> {
     public T getValue() {
         return operation();
     }
+
+    @Override
+    public int countLeaves(){
+        int numLeaves = 0;
+        for (Node<T> child : children) {
+            numLeaves += child.countLeaves();
+        }
+
+        return numLeaves;
+    }
 }

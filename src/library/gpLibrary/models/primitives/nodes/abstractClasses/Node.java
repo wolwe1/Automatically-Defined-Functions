@@ -159,4 +159,6 @@ public abstract class Node<T>
         }
         return numberOfNodes;
     }
+
+    public abstract int countLeaves();
 }

@@ -57,4 +57,5 @@ public class PatientVitalsFunction extends IFeedDownFunction<String> {
 
         return true;
     }
+
 }

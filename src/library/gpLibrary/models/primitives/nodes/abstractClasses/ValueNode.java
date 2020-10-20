@@ -8,4 +8,7 @@ public abstract class ValueNode<T> extends Node<T> implements IValueNode<T> {
         super(name);
     }
 
+    public ValueNode(Node<T> other) {
+        super(other);
+    }
 }

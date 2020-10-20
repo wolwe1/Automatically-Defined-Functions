@@ -36,10 +36,15 @@ public class TreePrinter implements ITreeVisitor<Double> {
     // and adapted to fit my needs.
     // This code is not intended for marking or for any assessment and I do not claim it as my own!
     // The code is for helping me to debug trees by having a visual representation.
-    public void drawTree(Node<Double> root) throws Exception {
+    public void drawTree(Node<Double> root){
 
         System.out.println("\n\nLevel order traversal of tree:");
-        int depth = depth(root);
+        int depth = 0;
+        try {
+            depth = depth(root);
+        } catch (Exception e) {
+            throw new RuntimeException("Unable to get depth");
+        }
         setLevels (root, 0);
 
         int[] depthChildCount = new int [depth+1];
@@ -47,7 +52,9 @@ public class TreePrinter implements ITreeVisitor<Double> {
 
         LinkedList<Node<Double>> q = new LinkedList<>();
         q.add(root.getChild(0));
-        q.add(root.getChild(1));
+
+        if(root.getChild(1) != null)
+            q.add(root.getChild(1));
 
         // draw root first
         root._drawPos = (int)Math.pow(2, depth-1)*H_SPREAD;
@@ -58,11 +65,17 @@ public class TreePrinter implements ITreeVisitor<Double> {
         while (!q.isEmpty())
         {
             Node<Double> ele = q.pollFirst();
-            drawElement (ele, depthChildCount, depth, q);
+            try {
+                drawElement (ele, depthChildCount, depth, q);
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to draw element");
+            }
             if (ele == null)
                 continue;
             q.add(ele.getChild(0));
-            q.add(ele.getChild(1));
+
+            if(root.getChild(1) != null)
+                q.add(ele.getChild(1));
         }
         System.out.println();
     }
@@ -81,39 +94,41 @@ public class TreePrinter implements ITreeVisitor<Double> {
             System.out.println();
             for (int i=0; i<(depth-ele._level+1); i++)
             {
-                int drawn = 0;
-                if (ele.parent.getChild(0) != null)
-                {
-                    drawn = ele.parent._drawPos - 2*i - 2;
-                    System.out.print(getSpace(drawn) + "/");
-                }
-                if (ele.parent.getChild(1) != null)
-                {
-                    int drawn2 = ele.parent._drawPos + 2*i + 2;
-                    System.out.print(getSpace(drawn2 - drawn) + "\\");
-                    drawn = drawn2;
-                }
-
-                Node<Double> doneParent = ele.parent;
-                for (Node<Double>  sibling: q)
-                {
-                    if (sibling == null)
-                        continue;
-                    if (sibling.parent == doneParent)
-                        continue;
-                    doneParent = sibling.parent;
-                    if (sibling.parent.getChild(0) != null)
+                if(ele.parent != null){
+                    int drawn = 0;
+                    if (ele.parent.getChild(0) != null)
                     {
-                        int drawn2 = sibling.parent._drawPos - 2*i - 2;
-                        System.out.print(getSpace(drawn2-drawn-1) + "/");
+                        drawn = ele.parent._drawPos - 2*i - 2;
+                        System.out.print(getSpace(drawn) + "/");
+                    }
+                    if (ele.parent.getChild(1) != null)
+                    {
+                        int drawn2 = ele.parent._drawPos + 2*i + 2;
+                        System.out.print(getSpace(drawn2 - drawn) + "\\");
                         drawn = drawn2;
                     }
 
-                    if (sibling.parent.getChild(1) != null)
+                    Node<Double> doneParent = ele.parent;
+                    for (Node<Double>  sibling: q)
                     {
-                        int drawn2 = sibling.parent._drawPos + 2*i + 2;
-                        System.out.print(getSpace(drawn2-drawn-1) + "\\");
-                        drawn = drawn2;
+                        if (sibling == null)
+                            continue;
+                        if (sibling.parent == doneParent)
+                            continue;
+                        doneParent = sibling.parent;
+                        if (sibling.parent.getChild(0) != null)
+                        {
+                            int drawn2 = sibling.parent._drawPos - 2*i - 2;
+                            System.out.print(getSpace(drawn2-drawn-1) + "/");
+                            drawn = drawn2;
+                        }
+
+                        if (sibling.parent.getChild(1) != null)
+                        {
+                            int drawn2 = sibling.parent._drawPos + 2*i + 2;
+                            System.out.print(getSpace(drawn2-drawn-1) + "\\");
+                            drawn = drawn2;
+                        }
                     }
                 }
                 System.out.println();
@@ -121,17 +136,20 @@ public class TreePrinter implements ITreeVisitor<Double> {
         }
         int offset=0;
         int numDigits = ele.name.length();
-        if (ele.parent.getChild(0) == ele)
-        {
-            ele._drawPos = ele.parent._drawPos - H_SPREAD*(depth-currDrawLevel+1);
-            //offset = 2;
-            offset += numDigits/2;
-        }
-        else
-        {
-            ele._drawPos = ele.parent._drawPos + H_SPREAD*(depth-currDrawLevel+1);
-            //offset = -2;
-            offset -= numDigits;
+
+        if(ele.parent != null){
+            if (ele.parent.getChild(0) == ele)
+            {
+                ele._drawPos = ele.parent._drawPos - H_SPREAD*(depth-currDrawLevel+1);
+                //offset = 2;
+                offset += numDigits/2;
+            }
+            else
+            {
+                ele._drawPos = ele.parent._drawPos + H_SPREAD*(depth-currDrawLevel+1);
+                //offset = -2;
+                offset -= numDigits;
+            }
         }
 
         System.out.print (getSpace(ele._drawPos - currSpaceCount + offset) + ele.name);
@@ -160,7 +178,11 @@ public class TreePrinter implements ITreeVisitor<Double> {
     private static int depth (Node<Double> n) throws Exception {
         if (n == null)
             return 0;
-        n._depth = 1 + Math.max(depth(n.getChild(0)), depth(n.getChild(1)));
+        if(n.getChild(1) != null)
+            n._depth = 1 + Math.max(depth(n.getChild(0)), depth(n.getChild(1)));
+        else
+            n._depth = 1 + depth(n.getChild(0));
+
         return n._depth;
     }
 

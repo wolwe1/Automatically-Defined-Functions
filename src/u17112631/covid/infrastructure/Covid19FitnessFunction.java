@@ -34,7 +34,7 @@ public class Covid19FitnessFunction implements IFitnessFunction<Double> {
     @Override
     public IMemberStatistics<Double> calculateFitness(NodeTree<Double> populationMember){
 
-        int numberOfDataPointsTreeCanContain = populationMember.getNumberOfPossibleLeafNodes();
+        int numberOfDataPointsTreeCanContain = populationMember.getMaximumNumberOfPossibleLeafNodes();
         int startIndexOfComparisons =  numberOfDataPointsTreeCanContain + _lookAhead;
 
         List<Double> answerSet = currentSet.stream().map(CovidTerminal::getValue)

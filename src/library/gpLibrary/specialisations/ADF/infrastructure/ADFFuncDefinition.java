@@ -38,7 +38,7 @@ public class ADFFuncDefinition<T> extends NodeTree<T> {
 
     @Override
     public boolean isFull() {
-        return numberOfNodes == _maxNodes;
+        return function.isFull();
     }
 
     @Override

@@ -42,4 +42,15 @@ public class FunctionalSet<T>
 
         throw new Exception("Attempted to access function '"+functionName+"' which does not exist");
     }
+
+    public void removeFunction(String name) {
+
+        for (int i = _functions.size() - 1; i >= 0; i--) {
+            var function = _functions.get(i);
+
+            if(function.name.equals(name))
+                _functions.remove(i);
+        }
+
+    }
 }

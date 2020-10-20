@@ -47,7 +47,6 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
         for (int i = 0; i < populationSize; i++) {
             NodeTree<T> newTree = generator.createRandom();
             PopulationMember<T> newMember = new PopulationMember<>(newTree);
-
             _nextPopulation.add(newMember);
         }
         setNewPopulation();

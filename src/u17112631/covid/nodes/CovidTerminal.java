@@ -29,7 +29,7 @@ public class CovidTerminal extends ValueNode<Double> {
 
     @Override
     public boolean isFull() {
-        return false;
+        return true;
     }
 
     @Override
@@ -54,6 +54,11 @@ public class CovidTerminal extends ValueNode<Double> {
     @Override
     public boolean isValid() {
         return true;
+    }
+
+    @Override
+    public int countLeaves() {
+        return 1;
     }
 
     public void setMode(CovidPredictionMode mode){

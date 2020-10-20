@@ -40,8 +40,9 @@ public class ADFTreeGenerator<T> extends TreeGenerator<T> {
         ADFFuncDefinition<T> functionDefinition = newTree.getFunctionDefinition();
         ADFMain<T> main = newTree.getMain();
 
+        //TODO: Conflict between is full in functions and ADFunction
         try {
-            functionDefinition.addNode(pickFunction()); //TODO: Ensure this sets function children
+            functionDefinition.addNode(pickFunction());
         }catch (Exception e){
             throw new RuntimeException("Unable to create tree root");
         }
@@ -59,6 +60,9 @@ public class ADFTreeGenerator<T> extends TreeGenerator<T> {
 
         fillTree(main);
 
+        newTree.useMain();
+
+        functionalSet.removeFunction(func.name);
         return newTree;
     }
 

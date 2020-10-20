@@ -12,15 +12,14 @@ public class ADFunction<T> extends ValueNode<T> {
 
     protected ADFunction(String name) {
         super(name);
+        _maxChildren = 1;
     }
 
     public ADFunction(ADFunction<T> other) {
-        super(other.name);
+        super(other);
         root = (ValueNode<T>) other.root.getCopy(true);
 
-        this.children.clear();
         this.children.add(root);
-
     }
 
 
@@ -49,6 +48,11 @@ public class ADFunction<T> extends ValueNode<T> {
     @Override
     public boolean isValid() {
         return root.isValid();
+    }
+
+    @Override
+    public int countLeaves() {
+        return root.countLeaves();
     }
 
     @Override

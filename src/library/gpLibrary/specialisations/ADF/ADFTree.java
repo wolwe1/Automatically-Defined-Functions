@@ -105,8 +105,8 @@ public class ADFTree<T> extends NodeTree<T> {
     }
 
     @Override
-    public int getNumberOfPossibleLeafNodes() {
-        return root.getNumberOfPossibleLeafNodes();
+    public int getMaximumNumberOfPossibleLeafNodes() {
+        return root.getNumberOfLeafNodes();
     }
 
     @Override
@@ -129,5 +129,9 @@ public class ADFTree<T> extends NodeTree<T> {
 
     public ADFunction<T> getFunction() {
         return getFunctionDefinition().getFunction();
+    }
+
+    public void useMain() {
+        root.useMain();
     }
 }

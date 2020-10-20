@@ -45,7 +45,7 @@ public class SetupManager {
 
         String useDefaults = getStringInput("Use defaults? {Y/N}");
         if(useDefaults.toUpperCase().contains("Y")){
-            int populationSize = 1;
+            int populationSize = 10;
             int numberOfGenerations = 1;
             int numberOfRuns = 1;
 

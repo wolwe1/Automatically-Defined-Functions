@@ -97,8 +97,12 @@ public abstract class NodeTree<T>
      * Returns the total amount of possible leaf nodes the tree can contain
      * @return The maximum possible leaf nodes a tree can support
      */
-    public int getNumberOfPossibleLeafNodes() {
+    public int getMaximumNumberOfPossibleLeafNodes() {
         return (int) Math.pow(maxBreadth,maxDepth - 1);
+    }
+
+    public int getNumberOfLeafNodes(){
+        return getRoot().countLeaves();
     }
 
     /**

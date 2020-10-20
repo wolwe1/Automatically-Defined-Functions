@@ -35,7 +35,7 @@ public class ADFMain<T> extends NodeTree<T> {
         if(root == null)
             return false;
 
-        return root.isFull();
+        return !root.canTakeMoreChildren();
     }
 
     @Override
@@ -62,7 +62,7 @@ public class ADFMain<T> extends NodeTree<T> {
 
         for (Node<T> node : nodesToLoad) {
             try {
-                root.addChild(node);
+                breadthFirstInsert(node);
             } catch (Exception e) {
                 throw new RuntimeException("Unable to load nodes");
             }

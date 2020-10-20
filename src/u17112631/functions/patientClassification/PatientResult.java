@@ -37,6 +37,11 @@ public class PatientResult extends ChoiceNode<String> {
     }
 
     @Override
+    public int countLeaves() {
+        return 1;
+    }
+
+    @Override
     public String feed(Problem<String> problem) {
         return name;
     }

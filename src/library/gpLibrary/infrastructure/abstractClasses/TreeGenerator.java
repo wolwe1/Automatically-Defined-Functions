@@ -69,7 +69,7 @@ public abstract class TreeGenerator<T> implements ITreeGenerator<T> {
     @Override
     public NodeTree<T> fillTree(NodeTree<T> tree) {
 
-        while (!tree.isFull()) {
+        while (!tree.isFull()) { //TODO:FIX IS FULL
             try {
                 if(tree.requiresTerminals())
                     tree.addNode(pickTerminal());
