@@ -32,6 +32,11 @@ public class TreePrinter implements ITreeVisitor<Double> {
         nodes.clear();
     }
 
+    @Override
+    public List<? extends Node<Double>> getNodes() {
+        return nodes;
+    }
+
     // The code below has been taken from https://prismoskills.appspot.com/lessons/Binary_Trees/Tree_printing.jsp
     // and adapted to fit my needs.
     // This code is not intended for marking or for any assessment and I do not claim it as my own!

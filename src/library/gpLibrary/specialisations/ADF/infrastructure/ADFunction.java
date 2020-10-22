@@ -9,16 +9,18 @@ import java.util.Queue;
 public class ADFunction<T> extends ValueNode<T> {
 
     ValueNode<T> root;
+    String composition;
 
     protected ADFunction(String name) {
         super(name);
         _maxChildren = 1;
+        composition = "";
     }
 
     public ADFunction(ADFunction<T> other) {
         super(other);
         root = (ValueNode<T>) other.root.getCopy(true);
-
+        composition = other.composition;
         this.children.add(root);
     }
 
@@ -26,6 +28,11 @@ public class ADFunction<T> extends ValueNode<T> {
     @Override
     public ADFunction<T> getCopy() {
         return new ADFunction<>(this);
+    }
+
+    @Override
+    public Node<T> getCopy(boolean includeChildren){
+        return getCopy();
     }
 
     @Override
@@ -109,5 +116,13 @@ public class ADFunction<T> extends ValueNode<T> {
         }
 
         throw new RuntimeException("The node was not able to be added");
+    }
+
+    public String getComposition() {
+        return composition;
+    }
+
+    public void setComposition(String composition) {
+        this.composition = composition;
     }
 }

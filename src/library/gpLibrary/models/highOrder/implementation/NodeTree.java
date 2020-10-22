@@ -16,7 +16,7 @@ public abstract class NodeTree<T>
     public int maxDepth;
     public int maxBreadth;
 
-    protected int _maxNodes;
+    protected int maxNodes;
     protected int numberOfNodes;
 
     public NodeTree(int maxDepth,int maxBreadth)
@@ -26,7 +26,7 @@ public abstract class NodeTree<T>
         depth = 0;
         numberOfNodes = 0;
         //root = null;
-        _maxNodes = calculateMaximumSize(maxBreadth,maxDepth);
+        maxNodes = calculateMaximumSize(maxBreadth,maxDepth);
     }
 
     /**
@@ -47,7 +47,7 @@ public abstract class NodeTree<T>
         this.depth = other.depth;
         this.numberOfNodes = other.numberOfNodes;
         //root = null;
-        _maxNodes = other._maxNodes;
+        maxNodes = other.maxNodes;
     }
 
     public int getSize()
@@ -175,7 +175,7 @@ public abstract class NodeTree<T>
     public abstract NodeTree<T> getCopy();
 
     public int getMaxNodes() {
-        return _maxNodes;
+        return maxNodes;
     }
 
     public void replaceNode(int nodeToReplace, Node<T> newNode) {
@@ -197,4 +197,5 @@ public abstract class NodeTree<T>
     public abstract boolean acceptsNode(Node<T> nodeToAdd);
 
     public abstract void addNodes(List<? extends Node<T>> nodesToLoad);
+
 }

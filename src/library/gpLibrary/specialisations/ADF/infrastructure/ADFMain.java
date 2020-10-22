@@ -14,10 +14,10 @@ public class ADFMain<T> extends NodeTree<T> {
         super(maxDepth, maxBreadth);
     }
 
-    public ADFMain(NodeTree<T> other) {
+    public ADFMain(ADFMain<T> other) {
         super(other);
 
-        root = (ValueNode<T>) other.getRoot().getCopy(true);
+        root = (ValueNode<T>) (other.getRoot().getCopy(true));
     }
 
     @Override
@@ -47,7 +47,7 @@ public class ADFMain<T> extends NodeTree<T> {
     }
 
     @Override
-    public Node<T> getRoot() {
+    public ValueNode<T> getRoot() {
         return root;
     }
 

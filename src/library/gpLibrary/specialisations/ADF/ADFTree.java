@@ -9,21 +9,29 @@ import library.gpLibrary.specialisations.ADF.infrastructure.ADFRoot;
 import library.gpLibrary.specialisations.ADF.infrastructure.ADFunction;
 
 import java.util.List;
+import java.util.Random;
 
 public class ADFTree<T> extends NodeTree<T> {
 
-    private ADFRoot<T> root;
+    private final ADFRoot<T> root;
 
     public ADFTree(int maxFuncDepth, int maxFuncBreadth,int maxMainDepth, int maxMainBreadth) {
         super();
 
         root = new ADFRoot<>(maxFuncDepth,maxFuncBreadth,maxMainDepth,maxMainBreadth);
         //Must handle breadth and depth calculations manually
-        _maxNodes = root.getMaxNodes();
+        maxNodes = root.getMaxNodes();
     }
 
-    public ADFTree(NodeTree<T> other) {
+    public ADFTree(ADFTree<T> other) {
         super(other);
+
+        root = new ADFRoot<>(other.getADFRoot());
+        maxNodes = root.getMaxNodes();
+    }
+
+    private ADFRoot<T> getADFRoot() {
+        return root;
     }
 
     @Override
@@ -86,7 +94,7 @@ public class ADFTree<T> extends NodeTree<T> {
         String main;
 
         //Get function combination
-        ADFFuncDefinition<T> functionDefinition = root.getFunction().getCopy();
+        ADFFuncDefinition<T> functionDefinition = root.getFunctionDefinition().getCopy();
         functionDefinition.clearLeaves();
         functionDefinition.visitTree(visitor);
         functionStr = visitor.getCombination();
@@ -120,7 +128,7 @@ public class ADFTree<T> extends NodeTree<T> {
     }
 
     public ADFFuncDefinition<T> getFunctionDefinition() {
-        return root.getFunction();
+        return root.getFunctionDefinition();
     }
 
     public ADFMain<T> getMain(){
@@ -133,5 +141,32 @@ public class ADFTree<T> extends NodeTree<T> {
 
     public void useMain() {
         root.useMain();
+    }
+
+    /**
+     * Selects a random node in the function definition and replaces it, updating mains references
+     * @param randomGenerator The generator for selecting the point to replace
+     */
+    public void replaceNodeInFunction(Random randomGenerator, Node<T> replacingNode) {
+        ADFFuncDefinition<T> functionDefinition = getFunctionDefinition();
+
+        int pointToReplace = randomGenerator.nextInt(functionDefinition.getSize() - 1) + 1;
+
+        functionDefinition.replaceNode(pointToReplace,replacingNode);
+
+    }
+
+    public void replaceNodeInMain(Random randomGenerator, Node<T> replacingNode) {
+        ADFMain<T> main = getMain();
+        int pointToReplace = randomGenerator.nextInt(main.getSize() - 1) + 1;
+        while (root.pointLiesWithinFunction(pointToReplace)){
+            pointToReplace = randomGenerator.nextInt(main.getSize() - 1) + 1;
+        }
+
+        main.replaceNode(pointToReplace,replacingNode);
+    }
+
+    public void updateMainWithNewFunctionDefinition(){
+        root.updateMainWithNewFunctionDefinition();
     }
 }

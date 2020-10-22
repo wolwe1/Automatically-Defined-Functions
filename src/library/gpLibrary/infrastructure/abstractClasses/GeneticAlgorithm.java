@@ -130,7 +130,7 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
         //Fill up the pool if required
         if(_fixedPopulation && (totalNewPopulation < _populationSize)){
             int difference = _populationSize - totalNewPopulation;
-            _operators.get("Random").setOutputCount(difference);
+            _operators.get("Create").setOutputCount(difference);
         }
     }
 

@@ -61,7 +61,7 @@ public class ClassificationTreeGenerator<T> extends TreeGenerator<T> {
     }
 
     @Override
-    public List<NodeTree<T>> replaceSubTrees(PopulationMember<T> first, PopulationMember<T> second) {
+    public List<NodeTree<T>> swapSubTrees(PopulationMember<T> first, PopulationMember<T> second) {
         NodeTree<T> firstTree = first.getTree();
         NodeTree<T> secondTree = second.getTree();
 
@@ -74,7 +74,7 @@ public class ClassificationTreeGenerator<T> extends TreeGenerator<T> {
 
         firstTree.replaceNode(pointToReplaceInFirst,secondSubTree);
         secondTree.replaceNode(pointToReplaceInSecond,firstSubtree);
-        //TODO: Trees arent updated correctly
+
         if(!firstTree.isValid()){
             var node = firstTree.getNode(pointToReplaceInFirst);
             throw new RuntimeException("Invalid");

@@ -32,4 +32,9 @@ public class TreeCombinationVisitor<T> implements ITreeVisitor<T> {
     public void clear() {
         visitedNodes.clear();
     }
+
+    @Override
+    public List<? extends Node<T>> getNodes() {
+        return visitedNodes;
+    }
 }

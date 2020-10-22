@@ -1,5 +1,6 @@
 package library.gpLibrary.specialisations.ADF.infrastructure;
 
+import library.gpLibrary.functionality.implementation.TreeCombinationVisitor;
 import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.ValueNode;
@@ -70,5 +71,14 @@ public class ADFFuncDefinition<T> extends NodeTree<T> {
 
     public ADFunction<T> getFunction() {
         return function;
+    }
+
+    public void setFunctionComposition(){
+        TreeCombinationVisitor<T> visitor = new TreeCombinationVisitor<>();
+        visitTree(visitor);
+
+        String composition = visitor.getCombination();
+        function.setComposition(composition);
+
     }
 }
