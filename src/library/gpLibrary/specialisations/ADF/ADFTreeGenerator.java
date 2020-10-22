@@ -82,9 +82,14 @@ public class ADFTreeGenerator<T> extends TreeGenerator<T> {
         return newTree;
     }
 
+    //TODO: Try fix edge case
     @Override
     public ADFTree<T> replaceSubTree(PopulationMember<T> chromosome) {
         ADFTree<T> tree = (ADFTree<T>) chromosome.getTree();
+
+        ADFMain<T> main = tree.getMain(); //Ensure main has empty terminals
+        main.clearLeaves();
+        fillTree(main);
 
         int choice = randomGenerator.nextInt(2);
 
@@ -95,6 +100,7 @@ public class ADFTreeGenerator<T> extends TreeGenerator<T> {
             tree.updateMainWithNewFunctionDefinition();
         }else{
             tree.replaceNodeInMain(randomGenerator,replacingNode);
+            fillTree(main);
         }
 
         if(!tree.isValid())

@@ -63,6 +63,11 @@ public class ADFunction<T> extends ValueNode<T> {
     }
 
     @Override
+    public void setChildAtFirstTerminal(Node<T> nodeInMain) {
+        root.setChildAtFirstTerminal(nodeInMain);
+    }
+
+    @Override
     public boolean isFull() {
         if(root == null)
             return false;

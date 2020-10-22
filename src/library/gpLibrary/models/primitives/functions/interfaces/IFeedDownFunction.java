@@ -49,4 +49,25 @@ public abstract class IFeedDownFunction<T> extends ChoiceNode<T> {
         }
         return  numLeaves;
     }
+
+    @Override
+    public void setChildAtFirstTerminal(Node<T> node) {
+        if(children.size() == 0) {
+            try {
+                addChild(node);
+            } catch (Exception e) {
+                throw new RuntimeException("Unable to set node as child");
+            }
+        }
+
+        for (int i = 0, childrenSize = children.size(); i < childrenSize; i++) {
+            Node<T> child = children.get(i);
+            if (child.getChildren().size() == 0) {//Terminal node
+                setChild(i,node);
+                return;
+            }
+        }
+
+        throw new RuntimeException("Unable to set child");
+    }
 }

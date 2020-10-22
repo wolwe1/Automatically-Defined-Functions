@@ -1,6 +1,7 @@
 package library.gpLibrary.specialisations.ADF.infrastructure;
 
 import library.gpLibrary.functionality.implementation.BreadthFirstVisitor;
+import library.gpLibrary.functionality.implementation.DepthFirstVisitor;
 import library.gpLibrary.functionality.interfaces.ITreeVisitor;
 import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
@@ -144,38 +145,60 @@ public class ADFRoot<T> extends NodeTree<T> {
         ADFunction<T> newFunction = definition.getFunction();
         List<ADFunction<T>> usagesOfFunctionInMain = getFunctionsInMain();
 
-        for (ADFunction<T> funcInMain : usagesOfFunctionInMain) {
+        for (int i = usagesOfFunctionInMain.size() - 1; i >= 0; i--) {
+            ADFunction<T> funcInMain = usagesOfFunctionInMain.get(i);
             updateFunction(newFunction,funcInMain);
         }
     }
 
     private void updateFunction(ADFunction<T> newFunction, ADFunction<T> funcInMain) {
 
-        List<? extends Node<T>> newFunctionComposition = getFunctionComposition(newFunction);
-        List<? extends Node<T>> functionComposition = getFunctionComposition(funcInMain);
+        List<? extends Node<T>> newFunctionComposition = getDepthFirstComposition(newFunction);
+        List<? extends Node<T>> mainFunctionComposition = getDepthFirstComposition(funcInMain);
 
-        //Foreach new function node, check if it is different from original
-        int originalIndex = 0;
-        for (int newFuncIndex = 0; newFuncIndex < newFunctionComposition.size(); newFuncIndex++) {
-            Node<T> newNode = newFunctionComposition.get(newFuncIndex);
-            Node<T> originalNode = functionComposition.get(originalIndex);
+        int indexInMain = 0;
+        for (int i = 0; i < newFunctionComposition.size(); i++) {
+            Node<T> newNode = newFunctionComposition.get(i);
+            Node<T>  nodeInMain = mainFunctionComposition.get(indexInMain);
 
-            if(!newNode.name.equals(originalNode.name)){
-                //Node is different,update it
-                originalNode.parent.setChild(originalNode.index,newNode);
-                if(newNode._maxChildren == originalNode._maxChildren){
-                    for (Node<T> child : originalNode.getChildren()) {
-                        try {
-                            newNode.addChild(child.getCopy(true));
-                        } catch (Exception e) {
-                            throw new RuntimeException("Unable to create a copy of child in function update");
-                        }
-                    }
+            //If nodes are not equal then we must make a change to main function
+            if(!newNode.name.equals(nodeInMain.name)){
+
+                //New function changes this branch root, set new root and add old root as first child
+
+                if(!newNode.name.equals("Empty")){
+                    nodeInMain.parent.setChild(nodeInMain.index,newNode);
+
+                    i += newNode.getSize();
+                    //New function changes branch root but is non terminal,
+                    // need to propagate the add to first terminal
+                    newNode.setChildAtFirstTerminal(nodeInMain);
+
                 }
+                indexInMain += nodeInMain.getSize();
+
+            }else{
+                indexInMain++;
             }
         }
+
+
         if(!funcInMain.isValid())
             throw new RuntimeException("Invalid function created during update");
+    }
+
+    private List<? extends Node<T>> getDepthFirstComposition(ADFunction<T> tree) {
+
+        DepthFirstVisitor<T> depthFirstVisitor = new DepthFirstVisitor<>();
+        depthFirstVisitor.visit(tree.root);
+
+        List<Node<T>> nodesExcludingFunctions = new ArrayList<>();
+        for (Node<T> node : depthFirstVisitor.getNodes()) {
+            if(!(node instanceof ADFunction))
+                nodesExcludingFunctions.add(node);
+        }
+        //return depthFirstVisitor.getNodes();
+        return nodesExcludingFunctions;
     }
 
     /**
@@ -243,17 +266,6 @@ public class ADFRoot<T> extends NodeTree<T> {
         functionWrapper.function = function;
         functionWrapper.visitTree(visitor);
 
-        String[] funcDefinition = function.getComposition().split("\\.");
-        List<Node<T>> nodesInFunction = new ArrayList<>();
-        List<Node<T>> nodesVisited = (List<Node<T>>) visitor.getNodes();
-
-        for (int i = 0; i < funcDefinition.length; i++){
-            String node = funcDefinition[i];
-            //Process char
-            if(nodesVisited.get(i).name.equals(node))
-                nodesInFunction.add(nodesVisited.get(i)) ;
-        }
-
-        return nodesInFunction;
+        return visitor.getNodes();
     }
 }

@@ -42,6 +42,11 @@ public class PatientResult extends ChoiceNode<String> {
     }
 
     @Override
+    public void setChildAtFirstTerminal(Node<String> nodeInMain) {
+        throw new RuntimeException("Terminal cannot set terminal");
+    }
+
+    @Override
     public String feed(Problem<String> problem) {
         return name;
     }

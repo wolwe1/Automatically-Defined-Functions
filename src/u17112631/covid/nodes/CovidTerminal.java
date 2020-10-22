@@ -1,5 +1,6 @@
 package u17112631.covid.nodes;
 
+import library.gpLibrary.models.primitives.nodes.abstractClasses.Node;
 import library.gpLibrary.models.primitives.nodes.abstractClasses.ValueNode;
 import u17112631.covid.helpers.CovidEntry;
 import u17112631.covid.helpers.CovidPredictionMode;
@@ -59,6 +60,11 @@ public class CovidTerminal extends ValueNode<Double> {
     @Override
     public int countLeaves() {
         return 1;
+    }
+
+    @Override
+    public void setChildAtFirstTerminal(Node<Double> nodeInMain) {
+        throw new RuntimeException("Terminal cannot set child");
     }
 
     public void setMode(CovidPredictionMode mode){

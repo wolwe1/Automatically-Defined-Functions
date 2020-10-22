@@ -161,4 +161,6 @@ public abstract class Node<T>
     }
 
     public abstract int countLeaves();
+
+    public abstract void setChildAtFirstTerminal(Node<T> nodeInMain);
 }

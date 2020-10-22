@@ -37,4 +37,9 @@ public class EmptyNode extends Node<Double> {
     public int countLeaves() {
         return 1;
     }
+
+    @Override
+    public void setChildAtFirstTerminal(Node<Double> nodeInMain) {
+        throw new RuntimeException("Terminal cannot set terminal");
+    }
 }
