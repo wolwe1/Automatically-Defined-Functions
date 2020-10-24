@@ -18,6 +18,7 @@ public class ADFMain<T> extends NodeTree<T> {
         super(other);
 
         root = (ValueNode<T>) (other.getRoot().getCopy(true));
+        root.setLevel(0);
     }
 
     @Override
@@ -70,4 +71,7 @@ public class ADFMain<T> extends NodeTree<T> {
         numberOfNodes += nodesToLoad.size();
     }
 
+    public void cutTree(int maxDepthIncrease) {
+        root.cutNodes(maxDepth + maxDepthIncrease);
+    }
 }

@@ -24,7 +24,7 @@ public class ADFFuncDefinition<T> extends NodeTree<T> {
     public ADFFuncDefinition(ADFFuncDefinition<T> other) {
         super(other.maxDepth,other.maxBreadth);
         arguments = other.arguments;
-        function = (ADFunction<T>) other.function.getCopy();
+        function = other.function.getCopy();
     }
 
     @Override
@@ -80,5 +80,9 @@ public class ADFFuncDefinition<T> extends NodeTree<T> {
         String composition = visitor.getCombination();
         function.setComposition(composition);
 
+    }
+
+    public void cutTree(int maxDepthIncrease) {
+        function.root.cutNodes(maxDepth + maxDepthIncrease);
     }
 }

@@ -26,7 +26,7 @@ public abstract class BasicFunction<T> extends IOperateUpFunction<T> {
 
     @Override
     public boolean requiresTerminals(int maxDepth) {
-        if(_level == maxDepth - 1)
+        if(_level >= maxDepth - 1)
             return true;
 
         for (Node<T> child : children) {
@@ -43,7 +43,7 @@ public abstract class BasicFunction<T> extends IOperateUpFunction<T> {
             return false;
 
         for (Node<T> child : children) {
-            if(!child.isValid())
+            if(!child.isValid() || child._level != this._level + 1)
                 return false;
         }
 
@@ -84,6 +84,18 @@ public abstract class BasicFunction<T> extends IOperateUpFunction<T> {
             }
         }
 
-        throw new RuntimeException("Unable to set child");
+        //throw new RuntimeException("Unable to set child");
+    }
+
+    @Override
+    public void cutNodes(int maxDepth){
+
+        if(_level >= maxDepth - 1){
+            children.clear();
+        }else{
+            for (Node<T> child : children) {
+                child.cutNodes(maxDepth);
+            }
+        }
     }
 }

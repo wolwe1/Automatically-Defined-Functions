@@ -67,6 +67,11 @@ public class CovidTerminal extends ValueNode<Double> {
         throw new RuntimeException("Terminal cannot set child");
     }
 
+    @Override
+    public void cutNodes(int i) {
+        return; //Do nothing
+    }
+
     public void setMode(CovidPredictionMode mode){
         this.mode = mode;
 

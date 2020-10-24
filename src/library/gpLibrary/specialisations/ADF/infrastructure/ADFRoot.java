@@ -77,10 +77,8 @@ public class ADFRoot<T> extends NodeTree<T> {
 
     @Override
     public boolean requiresTerminals() {
-        if(isDoingFuncInsert)
-            return definition.requiresTerminals();
-        else
-            return main. requiresTerminals();
+
+        return definition.requiresTerminals() || main.requiresTerminals();
     }
 
     @Override
@@ -109,6 +107,12 @@ public class ADFRoot<T> extends NodeTree<T> {
             definition.addNodes(nodesToLoad);
         else
             main.addNodes(nodesToLoad);
+    }
+
+    @Override
+    public void cutTree(int maxDepthIncrease) {
+        definition.cutTree(maxDepthIncrease);
+        main.cutTree(maxDepthIncrease);
     }
 
     public ADFFuncDefinition<T> getFunctionDefinition() {
@@ -158,6 +162,9 @@ public class ADFRoot<T> extends NodeTree<T> {
 
         int indexInMain = 0;
         for (int i = 0; i < newFunctionComposition.size(); i++) {
+
+            if(indexInMain >= mainFunctionComposition.size()) return;
+
             Node<T> newNode = newFunctionComposition.get(i);
             Node<T>  nodeInMain = mainFunctionComposition.get(indexInMain);
 
@@ -167,24 +174,21 @@ public class ADFRoot<T> extends NodeTree<T> {
                 //New function changes this branch root, set new root and add old root as first child
 
                 if(!newNode.name.equals("Empty")){
-                    nodeInMain.parent.setChild(nodeInMain.index,newNode);
+                    nodeInMain.parent.setChild(nodeInMain.index,newNode.getCopy(true));
 
-                    i += newNode.getSize();
+                    i += newNode.getSize() - 1;
                     //New function changes branch root but is non terminal,
                     // need to propagate the add to first terminal
-                    newNode.setChildAtFirstTerminal(nodeInMain);
+                    newNode.setChildAtFirstTerminal(nodeInMain.getCopy(true));
 
                 }
-                indexInMain += nodeInMain.getSize();
+                indexInMain += nodeInMain.getSize() - 1;
 
             }else{
                 indexInMain++;
             }
         }
 
-
-        if(!funcInMain.isValid())
-            throw new RuntimeException("Invalid function created during update");
     }
 
     private List<? extends Node<T>> getDepthFirstComposition(ADFunction<T> tree) {

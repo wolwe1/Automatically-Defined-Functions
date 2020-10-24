@@ -15,6 +15,8 @@ import library.gpLibrary.models.primitives.nodes.implementation.EmptyNode;
 import library.gpLibrary.specialisations.ADF.ADFTreeGenerator;
 import u17112631.covid.helpers.CovidEntry;
 import u17112631.covid.nodes.AddFunction;
+import u17112631.covid.nodes.DivisionFunction;
+import u17112631.covid.nodes.MultiplicationFunction;
 import u17112631.covid.nodes.SubtractFunction;
 import u17112631.functions.patientClassification.PatientResult;
 import u17112631.functions.patientClassification.PatientVitalsFunction;
@@ -73,13 +75,13 @@ public class Main {
         FunctionalSet<Double> functionalSet = new FunctionalSet<>();
         functionalSet.addFunction(new AddFunction());
         functionalSet.addFunction(new SubtractFunction());
-        //functionalSet.addFunction(new MultiplicationFunction());
-        //functionalSet.addFunction(new DivisionFunction());
+        functionalSet.addFunction(new MultiplicationFunction());
+        functionalSet.addFunction(new DivisionFunction());
 
         TerminalSet<Double> terminalSet = new TerminalSet<>();
         terminalSet.addTerminal( new EmptyNode());
 
-        ADFTreeGenerator<Double> generator = new ADFTreeGenerator<>(functionalSet,terminalSet);
+        ADFTreeGenerator<Double> generator = new ADFTreeGenerator<>(functionalSet,terminalSet,2);
         generator.setDepths(2,2,5,2);
         return generator;
     }
@@ -108,6 +110,6 @@ public class Main {
         terminalSet.addTerminal(new PatientResult("S"));
         terminalSet.addTerminal(new PatientResult("A"));
 
-        return new ADFTreeGenerator<>(functionalSet,terminalSet);
+        return new ADFTreeGenerator<>(functionalSet,terminalSet,2);
     }
 }

@@ -8,8 +8,10 @@ import library.gpLibrary.specialisations.ADF.infrastructure.ADFMain;
 import library.gpLibrary.specialisations.ADF.infrastructure.ADFRoot;
 import library.gpLibrary.specialisations.ADF.infrastructure.ADFunction;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 
 public class ADFTree<T> extends NodeTree<T> {
 
@@ -76,6 +78,11 @@ public class ADFTree<T> extends NodeTree<T> {
     @Override
     public void addNodes(List<? extends Node<T>> nodesToLoad) {
         root.addNodes(nodesToLoad);
+    }
+
+    @Override
+    public void cutTree(int maxDepthIncrease) {
+        root.cutTree(maxDepthIncrease);
     }
 
     @Override
@@ -158,12 +165,29 @@ public class ADFTree<T> extends NodeTree<T> {
 
     public void replaceNodeInMain(Random randomGenerator, Node<T> replacingNode) {
         ADFMain<T> main = getMain();
+        int pointToReplace = getPointInMainNotFunction(randomGenerator);
+
+        if(pointToReplace != -1)
+            main.replaceNode(pointToReplace,replacingNode);
+    }
+
+    public int getPointInMainNotFunction(Random randomGenerator){
+
+        ADFMain<T> main = getMain();
         int pointToReplace = randomGenerator.nextInt(main.getSize() - 1) + 1;
-        while (root.pointLiesWithinFunction(pointToReplace)){
+
+        Set<Integer> usedPoints = new HashSet<>();
+        usedPoints.add(pointToReplace);
+
+        while (usedPoints.contains(pointToReplace) || root.pointLiesWithinFunction(pointToReplace)){
             pointToReplace = randomGenerator.nextInt(main.getSize() - 1) + 1;
+            usedPoints.add(pointToReplace);
+
+            if(usedPoints.size() == main.getSize() - 1)
+                return - 1;
         }
 
-        main.replaceNode(pointToReplace,replacingNode);
+        return pointToReplace;
     }
 
     public void updateMainWithNewFunctionDefinition(){

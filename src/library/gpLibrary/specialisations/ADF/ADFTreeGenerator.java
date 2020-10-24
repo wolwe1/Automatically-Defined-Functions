@@ -17,14 +17,15 @@ import java.util.stream.Stream;
 
 public class ADFTreeGenerator<T> extends TreeGenerator<T> {
 
+    private final int maxDepthIncrease;
     private int maxFuncDepth;
     private int maxFuncBreadth;
     private int maxMainDepth;
     private int maxMainBreadth;
 
-    public ADFTreeGenerator(FunctionalSet<T> functionalSet, TerminalSet<T> terminals){
+    public ADFTreeGenerator(FunctionalSet<T> functionalSet, TerminalSet<T> terminals,int maxDepthIncrease){
         super(functionalSet,terminals);
-
+        this.maxDepthIncrease = maxDepthIncrease;
     }
 
     public void setDepths(int maxFuncDepth,int maxFuncBreadth,int maxMainDepth,int maxMainBreadth){
@@ -65,6 +66,10 @@ public class ADFTreeGenerator<T> extends TreeGenerator<T> {
         newTree.useMain();
 
         functionalSet.removeFunction(func.name);
+
+        if(!newTree.isValid())
+            throw new RuntimeException("Created invalid tree");
+
         return newTree;
     }
 
@@ -82,7 +87,7 @@ public class ADFTreeGenerator<T> extends TreeGenerator<T> {
         return newTree;
     }
 
-    //TODO: Try fix edge case
+    //TODO: Try fix edge case,
     @Override
     public ADFTree<T> replaceSubTree(PopulationMember<T> chromosome) {
         ADFTree<T> tree = (ADFTree<T>) chromosome.getTree();
@@ -98,9 +103,12 @@ public class ADFTreeGenerator<T> extends TreeGenerator<T> {
             tree.replaceNodeInFunction(randomGenerator,replacingNode);
             fillTree(tree.getFunctionDefinition());
             tree.updateMainWithNewFunctionDefinition();
+            cutTree(tree.getFunctionDefinition());
+            fillTree(tree.getFunctionDefinition());
         }else{
             tree.replaceNodeInMain(randomGenerator,replacingNode);
-            fillTree(main);
+            cutTree(tree.getMain());
+            fillTree(tree.getMain());
         }
 
         if(!tree.isValid())
@@ -109,9 +117,13 @@ public class ADFTreeGenerator<T> extends TreeGenerator<T> {
         return tree;
     }
 
+    private void cutTree(NodeTree<T> tree) {
+        tree.cutTree(maxDepthIncrease);
+    }
+
     @Override
     public List<NodeTree<T>> swapSubTrees(PopulationMember<T> first, PopulationMember<T> second) {
-        //TODO: make it work
+
         ADFTree<T> firstMember = (ADFTree<T>) first.getTree();
         NodeTree<T> firstTree;
 
@@ -120,36 +132,53 @@ public class ADFTreeGenerator<T> extends TreeGenerator<T> {
 
         int choice = randomGenerator.nextInt(2);
 
+        int pointToReplaceInFirst;
+        int pointToReplaceInSecond;
+
         if(choice == 0){
             firstTree = firstMember.getFunctionDefinition();
             secondTree = secondMember.getFunctionDefinition();
 
+            pointToReplaceInFirst = randomGenerator.nextInt(firstTree.getSize() - 1) + 1;
+            pointToReplaceInSecond = randomGenerator.nextInt(secondTree.getSize() - 1) + 1;
+
         }else{
             firstTree = firstMember.getMain();
             secondTree = secondMember.getMain();
+
+            pointToReplaceInFirst = firstMember.getPointInMainNotFunction(randomGenerator);
+            pointToReplaceInSecond = secondMember.getPointInMainNotFunction(randomGenerator);
+
+            if(pointToReplaceInFirst == -1 || pointToReplaceInSecond == -1)
+                return Arrays.asList(firstMember,secondMember);
         }
 
-        int pointToReplaceInFirst = randomGenerator.nextInt(firstTree.getSize() - 1) + 1;
-        int pointToReplaceInSecond = randomGenerator.nextInt(secondTree.getSize() - 1) + 1;
 
         Node<T> firstSubtree = firstTree.getNode(pointToReplaceInFirst).getCopy(true);
         Node<T> secondSubTree = secondTree.getNode(pointToReplaceInSecond).getCopy(true);
 
-
         firstTree.replaceNode(pointToReplaceInFirst,secondSubTree);
         secondTree.replaceNode(pointToReplaceInSecond,firstSubtree);
 
-        if(!firstTree.isValid()){
-            var node = firstTree.getNode(pointToReplaceInFirst);
+
+        if(choice == 0){
+            firstMember.updateMainWithNewFunctionDefinition();
+            secondMember.updateMainWithNewFunctionDefinition();
+        }
+
+        cutTree(firstTree);
+        cutTree(secondTree);
+
+        fillTree(firstTree);
+        fillTree(secondTree);
+
+        if(!firstMember.isValid() || !secondMember.isValid()){
             throw new RuntimeException("Invalid");
         }
 
-        if(!secondTree.isValid()){
-            throw new RuntimeException("Invalid");
-        }
         List<NodeTree<T>> newTrees = new ArrayList<>();
-        newTrees.add(firstTree);
-        newTrees.add(secondTree);
+        newTrees.add(firstMember);
+        newTrees.add(secondMember);
 
         return newTrees;
     }

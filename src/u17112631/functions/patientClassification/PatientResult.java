@@ -47,6 +47,11 @@ public class PatientResult extends ChoiceNode<String> {
     }
 
     @Override
+    public void cutNodes(int i) {
+        return;
+    }
+
+    @Override
     public String feed(Problem<String> problem) {
         return name;
     }

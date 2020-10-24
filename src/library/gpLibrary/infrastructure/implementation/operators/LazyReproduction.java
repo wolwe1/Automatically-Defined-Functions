@@ -43,6 +43,9 @@ public class LazyReproduction<T> extends GeneticOperator<T> {
 
                 i++;
             }
+
+            if(!chosenOne.getTree().isValid()) throw new RuntimeException("Reproduced invalid tree");
+
             winners.add(chosenOne.getTree());
         }
         return winners;

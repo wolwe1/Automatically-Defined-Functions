@@ -47,7 +47,7 @@ public abstract class Node<T>
         if (isFull()) throw new Exception("Node cannot have any more children");
 
         newNode.parent = this;
-        newNode._level = _level + 1;
+        newNode.setLevel(_level + 1);
         newNode.index = children.size();
         children.add(newNode);
 
@@ -77,7 +77,7 @@ public abstract class Node<T>
         children.set(index,newChild);
     }
 
-    private void setLevel(int level) {
+    public void setLevel(int level) {
         this._level = level;
 
         for (Node<T> child : children) {
@@ -103,7 +103,9 @@ public abstract class Node<T>
     }
 
     public Node<T> removeChild(int index){
-        return (index >= 0 && index < children.size()) ? children.remove(index) : null;
+        if(index < 0 || index >= children.size()) throw new RuntimeException("Cannot remove child at this index");
+
+        return children.remove(index);
     }
 
 
@@ -163,4 +165,7 @@ public abstract class Node<T>
     public abstract int countLeaves();
 
     public abstract void setChildAtFirstTerminal(Node<T> nodeInMain);
+
+    public abstract void cutNodes(int i);
+
 }

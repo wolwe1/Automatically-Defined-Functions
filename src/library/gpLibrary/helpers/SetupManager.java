@@ -45,12 +45,12 @@ public class SetupManager {
 
         String useDefaults = getStringInput("Use defaults? {Y/N}");
         if(useDefaults.toUpperCase().contains("Y")){
-            int populationSize = 10;
-            int numberOfGenerations = 1;
+            int populationSize = 500;//100;
+            int numberOfGenerations = 100;//10;
             int numberOfRuns = 1;
 
-            double crossoverRate = 0.2;
-            double mutationRate = 0.2;
+            double crossoverRate = 0.2;//0.4;
+            double mutationRate = 0.6;//0.4;
             double reproductionRate = 0.2;
 
             info.setPopulationSize(populationSize);
@@ -82,6 +82,7 @@ public class SetupManager {
             }
             options = new StringBuilder(options.substring(0, options.length() - 1));
             String displayType = getStringInput("Display option: {" + options + "}" );
+            displayType = displayType.toUpperCase();
 
             String method = getStringInput("Covid19 dataset or patient");
             if(method.toUpperCase().contains("COVID"))

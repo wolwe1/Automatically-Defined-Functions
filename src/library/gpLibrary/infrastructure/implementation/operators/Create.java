@@ -31,8 +31,13 @@ public class Create<T> extends GeneticOperator<T> {
 
         for (int i = 0; i < outputCount; i++) {
             NodeTree<T> tree = generator.createRandom();
+
+            if(!tree.isValid())
+                throw new RuntimeException("Generated invalid tree");
+
             newChromosomes.add(tree);
         }
+
 
         return newChromosomes;
     }

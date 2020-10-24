@@ -69,9 +69,10 @@ public abstract class TreeGenerator<T> implements ITreeGenerator<T> {
     @Override
     public NodeTree<T> fillTree(NodeTree<T> tree) {
 
+        //TODO:Need to improve full measure
         while (!tree.isFull()) {
             try {
-                if(tree.requiresTerminals())
+                if(tree.requiresTerminals()) //TODO: WHY DOES THIS TAKE SO LONG
                     tree.addNode(pickTerminal());
                 else{
                     Node<T> nodeToAdd = pickNode();
@@ -83,6 +84,21 @@ public abstract class TreeGenerator<T> implements ITreeGenerator<T> {
                 }
             } catch (Exception e) {
                 e.printStackTrace();
+                throw new RuntimeException("Unable to generate tree");
+            }
+        }
+
+        if(!tree.isValid())
+            throw new RuntimeException("Invalid tree created");
+
+        return tree;
+    }
+
+    public NodeTree<T> fillWithTerminals(NodeTree<T> tree){
+        while (!tree.isFull()) {
+            try {
+                tree.addNode(pickTerminal());
+            } catch (Exception e) {
                 throw new RuntimeException("Unable to generate tree");
             }
         }

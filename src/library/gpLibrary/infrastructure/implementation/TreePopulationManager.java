@@ -67,7 +67,11 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
 
     @Override
     public PopulationMember<T> getBest() {
-        return _fitnessFunction.getFittest(_currentPopulation);
+        var fittest = _fitnessFunction.getFittest(_currentPopulation);
+        fittest.getTree().clearLeaves();
+        generator.fillTree(fittest.getTree());
+
+        return fittest;
     }
 
     @Override
@@ -208,6 +212,10 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
             IMemberStatistics<Double> memberStatistics = _fitnessFunction.calculateFitness(member.getTree());
             member.setFitness(memberStatistics.getFitness());
             _populationStatistics.add(memberStatistics);
+
+            //Return member to steady state
+            member.getTree().clearLeaves();
+            generator.fillWithTerminals(member.getTree());
         }
 
         PopulationStatistics<Double> populationStatistics = StatisticsManager.calculateAverages(_populationStatistics);

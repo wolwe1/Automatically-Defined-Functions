@@ -19,9 +19,9 @@ public class ADFunction<T> extends ValueNode<T> {
 
     public ADFunction(ADFunction<T> other) {
         super(other);
-        root = (ValueNode<T>) other.root.getCopy(true);
+        setRoot(other.root.getCopy(true));
+        root.setLevel(this._level);
         composition = other.composition;
-        this.children.add(root);
     }
 
 
@@ -38,7 +38,7 @@ public class ADFunction<T> extends ValueNode<T> {
     @Override
     public boolean canTakeMoreChildren() {
         if(root == null)
-            return false;
+            return true;
 
         return root.canTakeMoreChildren();
     }
@@ -54,7 +54,7 @@ public class ADFunction<T> extends ValueNode<T> {
 
     @Override
     public boolean isValid() {
-        return root.isValid();
+        return children.size() == _maxChildren && root.isValid() && root.parent == this;
     }
 
     @Override
@@ -68,13 +68,17 @@ public class ADFunction<T> extends ValueNode<T> {
     }
 
     @Override
+    public void cutNodes(int maxDepth) {
+        root.cutNodes(maxDepth);
+    }
+
+    @Override
     public boolean isFull() {
         if(root == null)
             return false;
 
         return !root.canTakeMoreChildren();
     }
-
 
     @Override
     public T getValue() {
@@ -88,13 +92,21 @@ public class ADFunction<T> extends ValueNode<T> {
 
     public void setRoot(Node<T> node) {
         this.root = (ValueNode<T>) node;
+        this.root.parent = this;
+        this.root.setLevel(this._level);
+
         this.children.clear();
         this.children.add(root);
     }
 
     @Override
     public Node<T> addChild(Node<T> newNode){
-        return breadthFirstInsert(newNode);
+
+        if(root == null){
+            setRoot(newNode);
+            return newNode;
+        }else
+            return breadthFirstInsert(newNode);
     }
 
     private Node<T> breadthFirstInsert(Node<T> newNode){
@@ -129,5 +141,30 @@ public class ADFunction<T> extends ValueNode<T> {
 
     public void setComposition(String composition) {
         this.composition = composition;
+    }
+
+    @Override
+    public void setChild(int index,Node<T> newChild){
+        if(index < 0 || index >= _maxChildren)
+            throw new RuntimeException("Attempted to set a child out of range");
+
+        newChild.index = index;
+        //
+        setRoot(newChild);
+    }
+
+    @Override
+    public void removeLeaves(){
+
+        for (int i = children.size() - 1; i >= 0; i--) {
+            Node<T> child = children.get(i);
+
+            if (child._maxChildren == 0){
+                removeChild(i);
+                root = null;
+            }
+            else
+                child.removeLeaves();
+        }
     }
 }

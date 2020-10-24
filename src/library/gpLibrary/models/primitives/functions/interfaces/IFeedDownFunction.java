@@ -70,4 +70,15 @@ public abstract class IFeedDownFunction<T> extends ChoiceNode<T> {
 
         throw new RuntimeException("Unable to set child");
     }
+
+    @Override
+    public void cutNodes(int maxDepth){
+        if(_level == maxDepth - 1){
+            children.clear();
+        }else{
+            for (Node<T> child : children) {
+                child.cutNodes(maxDepth);
+            }
+        }
+    }
 }

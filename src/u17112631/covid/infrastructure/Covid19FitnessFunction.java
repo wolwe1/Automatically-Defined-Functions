@@ -1,5 +1,6 @@
 package u17112631.covid.infrastructure;
 
+import library.gpLibrary.helpers.MathHelp;
 import library.gpLibrary.models.highOrder.implementation.NodeTree;
 import library.gpLibrary.models.highOrder.implementation.PopulationMember;
 import library.gpLibrary.models.highOrder.implementation.PopulationStatistics;
@@ -34,30 +35,40 @@ public class Covid19FitnessFunction implements IFitnessFunction<Double> {
     @Override
     public IMemberStatistics<Double> calculateFitness(NodeTree<Double> populationMember){
 
-        int numberOfDataPointsTreeCanContain = populationMember.getMaximumNumberOfPossibleLeafNodes();
+        int numberOfDataPointsTreeCanContain = populationMember.getNumberOfLeafNodes();
         int startIndexOfComparisons =  numberOfDataPointsTreeCanContain + _lookAhead;
 
-        List<Double> answerSet = currentSet.stream().map(CovidTerminal::getValue)
-                .collect(Collectors.toList()).subList(startIndexOfComparisons,currentSet.size());
-        List<Double> treeAnswers = new ArrayList<>();
+        try{
+            List<Double> answerSet = currentSet.stream().map(CovidTerminal::getValue)
+                    .collect(Collectors.toList()).subList(startIndexOfComparisons,currentSet.size());
 
-        //Perform a sliding window comparison
-        int endPointForTest = currentSet.size() - (numberOfDataPointsTreeCanContain + _lookAhead);
-        for (int i = 0; i < endPointForTest; i++) {
+            List<Double> treeAnswers = new ArrayList<>();
 
-            populationMember.clearLeaves();
-            //Load tree with data points
-            int lastIndexOfDayToUse = i + numberOfDataPointsTreeCanContain;
-            if(constant != null)
-                lastIndexOfDayToUse--;
+            //Perform a sliding window comparison
+            int endPointForTest = currentSet.size() - (numberOfDataPointsTreeCanContain + _lookAhead);
+            for (int i = 0; i < endPointForTest; i++) {
 
-            double treeAnswer = getTreeAnswerOnNextSetOfData(populationMember,currentSet.subList(i,lastIndexOfDayToUse));
+                populationMember.clearLeaves();
+                //Load tree with data points
+                int lastIndexOfDayToUse = i + numberOfDataPointsTreeCanContain;
+                if(constant != null)
+                    lastIndexOfDayToUse--;
 
-            treeAnswers.add(treeAnswer);
+                double treeAnswer = getTreeAnswerOnNextSetOfData(populationMember,currentSet.subList(i,lastIndexOfDayToUse));
 
+                treeAnswers.add(treeAnswer);
+
+            }
+
+            //populationMember.clearLeaves();
+            return calculateTreePerformance(treeAnswers,answerSet);
+        }catch (Exception e){
+            numberOfDataPointsTreeCanContain = populationMember.getNumberOfLeafNodes();
+
+            throw new RuntimeException("sfvjbaskjvs");
         }
 
-        return calculateTreePerformance(treeAnswers,answerSet);
+
 
     }
 
@@ -73,8 +84,8 @@ public class Covid19FitnessFunction implements IFitnessFunction<Double> {
             mse += Math.pow((treeAnswer - answer),2);
         }
 
-        treePerformance.setMeasure("MAE",mae);
-        treePerformance.setMeasure("MSE",mse);
+        treePerformance.setMeasure("MAE", MathHelp.easyRound(4,mae));
+        treePerformance.setMeasure("MSE",MathHelp.easyRound(4,mse));
         treePerformance.setFitness("MAE");
         return treePerformance;
     }

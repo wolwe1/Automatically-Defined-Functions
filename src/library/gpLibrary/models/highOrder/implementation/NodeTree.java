@@ -182,6 +182,7 @@ public abstract class NodeTree<T>
 
         Node<T> nodeInTree = getNode(nodeToReplace);
         nodeInTree.parent.setChild(nodeInTree.index,newNode);
+
     }
 
     public abstract boolean isFull();
@@ -197,5 +198,7 @@ public abstract class NodeTree<T>
     public abstract boolean acceptsNode(Node<T> nodeToAdd);
 
     public abstract void addNodes(List<? extends Node<T>> nodesToLoad);
+
+    public abstract void cutTree(int maxDepthIncrease);
 
 }

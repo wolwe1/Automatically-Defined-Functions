@@ -39,6 +39,11 @@ public class Crossover<T> extends GeneticOperator<T> {
             PopulationMember<T> second = chromosomes.get(i);
             
             List<NodeTree<T>> crossoverTrees = generator.swapSubTrees(first,second);
+
+            for (NodeTree<T> crossoverTree : crossoverTrees) {
+                if(!crossoverTree.isValid())
+                    throw new RuntimeException("Crossover created invalid tree");
+            }
             newTrees.addAll(crossoverTrees);
         }
         return newTrees;

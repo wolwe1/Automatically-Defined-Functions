@@ -81,6 +81,11 @@ public class ClassificationTree<T> extends NodeTree<T> {
         }
     }
 
+    @Override
+    public void cutTree(int maxDepthIncrease) {
+        root.cutNodes(maxDepthIncrease + maxDepth);
+    }
+
     private Node<T> getNextNodeForInsert() {
 
         Queue<Node<T>> queue = new ArrayDeque<>();

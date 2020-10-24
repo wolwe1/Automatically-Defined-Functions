@@ -22,4 +22,6 @@ public interface ITreeGenerator<T> {
     NodeTree<T> fillTree(NodeTree<T> mutatedChromosome);
 
     void setSeed(long seed);
+
+    NodeTree<T> fillWithTerminals(NodeTree<T> tree);
 }
