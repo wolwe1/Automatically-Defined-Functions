@@ -85,6 +85,7 @@ public class Covid19FitnessFunction implements IFitnessFunction<Double> {
         }
 
         treePerformance.setMeasure("MAE", MathHelp.easyRound(4,mae));
+        treePerformance.setMeasure("Avg MAE", MathHelp.easyRound(4,mae/treeAnswers.size()));
         treePerformance.setMeasure("MSE",MathHelp.easyRound(4,mse));
         treePerformance.setFitness("MAE");
         return treePerformance;

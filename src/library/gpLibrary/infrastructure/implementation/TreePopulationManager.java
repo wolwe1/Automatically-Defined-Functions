@@ -117,6 +117,11 @@ public class TreePopulationManager<T> implements IPopulationManager<T> {
         this.randomNumberGenerator.setSeed(seed);
     }
 
+    @Override
+    public IFitnessFunction<T> getFitnessFunction() {
+        return _fitnessFunction;
+    }
+
     private HashMap<String, Double> getTreeComposition() {
         HashMap<String,Integer> chromosomeFrequency = new HashMap<>();
         HashMap<String,Double> percentageComposition = new HashMap<>();

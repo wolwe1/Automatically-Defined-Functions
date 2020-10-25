@@ -6,6 +6,7 @@ import library.gpLibrary.infrastructure.interfaces.IGeneticAlgorithm;
 import library.gpLibrary.infrastructure.interfaces.IGeneticOperator;
 import library.gpLibrary.infrastructure.interfaces.IPopulationManager;
 import library.gpLibrary.models.highOrder.implementation.PopulationMember;
+import library.gpLibrary.models.primitives.IFitnessFunction;
 import library.gpLibrary.models.primitives.enums.PrintLevel;
 
 import java.util.HashMap;
@@ -187,5 +188,9 @@ public class GeneticAlgorithm<T> implements IGeneticAlgorithm<T> {
     @Override
     public void setSeed(long seed) {
         this.populationManager.setSeed(seed);
+    }
+
+    public IFitnessFunction<T> getFitnessFunction() {
+        return populationManager.getFitnessFunction();
     }
 }

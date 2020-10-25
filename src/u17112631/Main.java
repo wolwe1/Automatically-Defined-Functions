@@ -1,5 +1,6 @@
 package u17112631;
 
+import library.gpLibrary.helpers.Printer;
 import library.gpLibrary.helpers.RunInfo;
 import library.gpLibrary.helpers.SetupManager;
 import library.gpLibrary.infrastructure.abstractClasses.GeneticAlgorithm;
@@ -9,7 +10,9 @@ import library.gpLibrary.infrastructure.implementation.operators.LazyReproductio
 import library.gpLibrary.infrastructure.implementation.operators.Mutation;
 import library.gpLibrary.infrastructure.interfaces.ITreeGenerator;
 import library.gpLibrary.models.highOrder.implementation.FunctionalSet;
+import library.gpLibrary.models.highOrder.implementation.PopulationMember;
 import library.gpLibrary.models.highOrder.implementation.TerminalSet;
+import library.gpLibrary.models.highOrder.interfaces.IMemberStatistics;
 import library.gpLibrary.models.primitives.IFitnessFunction;
 import library.gpLibrary.models.primitives.nodes.implementation.EmptyNode;
 import library.gpLibrary.specialisations.ADF.ADFTreeGenerator;
@@ -22,7 +25,9 @@ import u17112631.functions.patientClassification.PatientResult;
 import u17112631.functions.patientClassification.PatientVitalsFunction;
 import u17112631.functions.patientClassification.PatientVitalsFunctionSingleValue;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Main {
     static String dataNames = "L-CORE,L-SURF,L-O2,L-BP,SURF-STBL,CORE-STBL,BP-STBL,COMFORT,ADM-DECS";
@@ -32,11 +37,47 @@ public class Main {
         SetupManager setupInfo = new SetupManager();
         GeneticAlgorithm<Double> geneticAlgorithm = setupGeneticAlgorithm(SEED,setupInfo);
 
+        List<PopulationMember<Double>> bestMembersFromEachRun = new ArrayList<>();
+
         for (int i = 0; i < setupInfo.getInfo().getNumberOfRuns(); i++) {
+            Printer.print("Run " + i);
+            Printer.underline();
             geneticAlgorithm.setSeed(i);
-            geneticAlgorithm.run();
+            bestMembersFromEachRun.add(geneticAlgorithm.run());
+            Printer.underline();
         }
-	// write your code here
+
+        IFitnessFunction<Double> fitnessFunction = geneticAlgorithm.getFitnessFunction();
+
+        List<IMemberStatistics<Double>> stats = new ArrayList<>();
+        List<IMemberStatistics<Double>> generelisationStats = new ArrayList<>();
+
+        for (PopulationMember<Double> runWinner : bestMembersFromEachRun) {
+            stats.add( fitnessFunction.calculateFitness(runWinner.getTree()));
+        }
+
+        fitnessFunction.useTestingSet();
+
+        for (PopulationMember<Double> runWinner : bestMembersFromEachRun) {
+            generelisationStats.add( fitnessFunction.calculateFitness(runWinner.getTree()));
+        }
+
+        Printer.print("Best performers");
+        Printer.underline();
+
+        Printer.print("Training");
+        for (int i = 0; i < stats.size(); i++) {
+            IMemberStatistics<Double> stat = stats.get(i);
+            Printer.print("Run " + i + ":" + bestMembersFromEachRun.get(i).getId());
+            stat.print();
+        }
+
+        Printer.print("Testing");
+        for (int i = 0; i < generelisationStats.size(); i++) {
+            IMemberStatistics<Double> stat = generelisationStats.get(i);
+            Printer.print("Run " + i + ":" + bestMembersFromEachRun.get(i).getId());
+            stat.print();
+        }
     }
 
     private static <T> GeneticAlgorithm<T> setupGeneticAlgorithm(long SEED,SetupManager setup) {
@@ -82,7 +123,7 @@ public class Main {
         terminalSet.addTerminal( new EmptyNode());
 
         ADFTreeGenerator<Double> generator = new ADFTreeGenerator<>(functionalSet,terminalSet,2);
-        generator.setDepths(2,2,5,2);
+        generator.setDepths(2,2,4,2);
         return generator;
     }
 

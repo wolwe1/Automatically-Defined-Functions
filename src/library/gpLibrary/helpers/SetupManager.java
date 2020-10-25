@@ -46,12 +46,12 @@ public class SetupManager {
         String useDefaults = getStringInput("Use defaults? {Y/N}");
         if(useDefaults.toUpperCase().contains("Y")){
             int populationSize = 500;//100;
-            int numberOfGenerations = 100;//10;
-            int numberOfRuns = 1;
+            int numberOfGenerations = 1000;//10;
+            int numberOfRuns = 10;
 
             double crossoverRate = 0.2;//0.4;
-            double mutationRate = 0.6;//0.4;
-            double reproductionRate = 0.2;
+            double mutationRate = 0.4;//0.4;
+            double reproductionRate = 0.4;
 
             info.setPopulationSize(populationSize);
             info.setNumberOfGenerations(numberOfGenerations);
@@ -60,7 +60,7 @@ public class SetupManager {
             info.setCrossoverRate(crossoverRate);
             info.setMutationRate(mutationRate);
             info.setReproductionRate(reproductionRate);
-            info.setDisplayType(PrintLevel.ALL);
+            info.setDisplayType(PrintLevel.NONE);
             info.setRunType("COVID");
 
             info.setTrainCountry("South Africa");

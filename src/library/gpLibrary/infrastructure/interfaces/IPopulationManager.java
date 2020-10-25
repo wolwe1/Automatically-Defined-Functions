@@ -1,6 +1,7 @@
 package library.gpLibrary.infrastructure.interfaces;
 
 import library.gpLibrary.models.highOrder.implementation.PopulationMember;
+import library.gpLibrary.models.primitives.IFitnessFunction;
 
 public interface IPopulationManager<T> {
 
@@ -57,4 +58,6 @@ public interface IPopulationManager<T> {
     void printFullHistory();
 
     void setSeed(long seed);
+
+    IFitnessFunction<T> getFitnessFunction();
 }
