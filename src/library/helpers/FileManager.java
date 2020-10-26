@@ -56,36 +56,40 @@ public class FileManager {
         if(!input.equals("")) baseDataDirectory = input;
     }
 
-    public void setupDirectories() {
-        String input = "";
+    public void setupDirectories(boolean useDefault) {
 
-        System.out.println("Current base directory is : \"" + baseDirectory + "\"");
-        System.out.println("Current data directory is : \"" + baseDirectory + baseDataDirectory);
+        if(!useDefault){
+            String input = "";
 
-        System.out.println("Would you like to change the base directory? {Y/N}");
-        try {
-            input = reader.readLine().toUpperCase();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Unable to read input");
+            System.out.println("Current base directory is : \"" + baseDirectory + "\"");
+            System.out.println("Current data directory is : \"" + baseDirectory + baseDataDirectory);
+
+            System.out.println("Would you like to change the base directory? {Y/N}");
+            try {
+                input = reader.readLine().toUpperCase();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Unable to read input");
+            }
+
+            if(input.equals("Y")){
+                selectBaseDirectory();
+            }
+
+            System.out.println("Would you like to change the data directory? {Y/N}");
+
+            try {
+                input = reader.readLine().toUpperCase();
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new RuntimeException("Unable to read input");
+            }
+
+            if(input.equals("Y")){
+                selectFileDirectory();
+            }
         }
 
-        if(input.equals("Y")){
-            selectBaseDirectory();
-        }
-
-        System.out.println("Would you like to change the data directory? {Y/N}");
-
-        try {
-            input = reader.readLine().toUpperCase();
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new RuntimeException("Unable to read input");
-        }
-
-        if(input.equals("Y")){
-            selectFileDirectory();
-        }
 
         System.out.println("Please select the target file number: ");
         List<String> files = getFilesInDirectory(baseDirectory + baseDataDirectory);
@@ -107,7 +111,7 @@ public class FileManager {
         System.out.println("Using source : " + baseDirectory + baseDataDirectory + fileName);
     }
 
-    public List<String> getData(boolean skipHeader){
+    public List<String> getData(boolean skipHeader,String specifics){
 
         File myObj = new File(baseDirectory + baseDataDirectory + fileName);
         Scanner myReader;
@@ -124,7 +128,9 @@ public class FileManager {
 
         while (myReader.hasNextLine()) {
             String data = myReader.nextLine();
-            lines.add(data);
+
+            if(data.contains(specifics))
+                lines.add(data);
         }
         myReader.close();
 

@@ -20,6 +20,8 @@ public class RunInfo {
     private String runtType;
     private String trainCountry;
     private String testCountry;
+    private String directory;
+    private String fileNumber;
 
     public List<String> getTrainData() {
         return trainData;
@@ -116,5 +118,14 @@ public class RunInfo {
     public String getTestCountry() {
         return testCountry;
     }
+
+    public void setDirectory(String directory) {
+        this.directory = directory;
+    }
+
+    public String getDirectory() {
+        return directory;
+    }
+
 }
 

@@ -7,7 +7,7 @@ import u17112631.covid.helpers.CovidPredictionMode;
 
 public class CovidTerminal extends ValueNode<Double> {
 
-    private final CovidEntry entry;
+    public final CovidEntry entry;
     public CovidPredictionMode mode;
     private Double value;
 

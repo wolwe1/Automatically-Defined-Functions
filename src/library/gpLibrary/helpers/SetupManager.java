@@ -13,10 +13,7 @@ import u17112631.covid.nodes.CovidTerminal;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class SetupManager {
 
@@ -32,26 +29,24 @@ public class SetupManager {
     }
 
     public void readDataFile(double trainingSplit,boolean skipheader){
-        fileManager.setupDirectories();
 
-        var data = fileManager.getData(skipheader);
-        List<List<String>> dataSets = splitData(data,trainingSplit);
-        info.setTrainData(dataSets.get(0));
-        info.setTestData(dataSets.get(1));
+        fileManager.setupDirectories(info.getDirectory().equals("Default"));
 
+        info.setTrainData(fileManager.getData(skipheader,info.getTrainCountry()));
+        info.setTestData(fileManager.getData(skipheader,info.getTestCountry()));
     }
 
     public void setupGPParameters(){
 
         String useDefaults = getStringInput("Use defaults? {Y/N}");
         if(useDefaults.toUpperCase().contains("Y")){
-            int populationSize = 500;//100;
-            int numberOfGenerations = 1000;//10;
+            int populationSize = 500;
+            int numberOfGenerations = 1000;
             int numberOfRuns = 10;
 
-            double crossoverRate = 0.2;//0.4;
-            double mutationRate = 0.4;//0.4;
-            double reproductionRate = 0.4;
+            double crossoverRate = 0.4;
+            double mutationRate = 0.4;
+            double reproductionRate = 0.2;
 
             info.setPopulationSize(populationSize);
             info.setNumberOfGenerations(numberOfGenerations);
@@ -64,7 +59,8 @@ public class SetupManager {
             info.setRunType("COVID");
 
             info.setTrainCountry("South Africa");
-            info.setTestCountry("Nigeria");
+            info.setTestCountry("South Korea");
+            info.setDirectory("Default");
 
         }else{
             int populationSize = (int) getNumericInput("Population size:");
@@ -107,6 +103,8 @@ public class SetupManager {
                 info.setTrainCountry(trainCountry);
                 info.setTestCountry(testCountry);
             }
+
+            info.setDirectory("Custom");
         }
 
     }
@@ -143,29 +141,40 @@ public class SetupManager {
         List<CovidTerminal> trainingSet = new ArrayList<>();
         List<CovidTerminal> testingSet = new ArrayList<>();
 
-        createCovidTerminals(template, training, trainingSet,info.getTrainCountry());
+        createCovidTerminals(template, training, trainingSet);
 
-        createCovidTerminals(template, testing, testingSet,info.getTestCountry());
+        createCovidTerminals(template, testing, testingSet);
 
         System.out.println("Training on " + trainingSet.size() + " samples");
         System.out.println("Testing on " + testingSet.size() + " samples");
 
-        return new Covid19FitnessFunction(lookAhead,trainingSet,testingSet);
+        trainingSet.sort(Comparator.comparing(a -> a.entry.observationDate));
+        testingSet.sort(Comparator.comparing(a -> a.entry.observationDate));
 
+        var fitnessFunction = new  Covid19FitnessFunction(lookAhead,trainingSet,testingSet);
+
+        //Constant
+//        var entry = new CovidEntry();
+//        entry.observationDate = new Date();
+//        entry.confirmedCases = 2;
+//        entry.deaths = 2;
+//        entry.recoveries = 2;
+//        fitnessFunction.setConstant( new CovidTerminal(entry));
+
+        return fitnessFunction;
     }
 
-    private void createCovidTerminals(IFileEntry template, List<String> testing, List<CovidTerminal> testingSet,String country) {
-        for (String row : testing) {
+    private void createCovidTerminals(IFileEntry template, List<String> dataSet, List<CovidTerminal> testingSet) {
+        for (String row : dataSet) {
             String[] data = row.split(",");
 
-            if(data[3].toUpperCase().equals(country.toUpperCase())){
-                try {
-                    CovidTerminal terminal = new CovidTerminal((CovidEntry) template.MakeCopy(data));
-                    testingSet.add(terminal);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+            try {
+                CovidTerminal terminal = new CovidTerminal((CovidEntry) template.MakeCopy(data));
+                testingSet.add(terminal);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
         }
     }
 

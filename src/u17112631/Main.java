@@ -129,8 +129,10 @@ public class Main {
 
 
     private static SetupManager doSetup(SetupManager setup) {
-        setup.readDataFile(0.7,true);
+
         setup.setupGPParameters();
+        setup.readDataFile(0.7,true);
+
         return setup;
     }
 
